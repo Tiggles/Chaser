@@ -1,7 +1,7 @@
 require "Entities"
 require "Helper_Functions"
 require "Score"
-require "bump/bump"
+local bump = require "bump"
 
 
 in_focus = false

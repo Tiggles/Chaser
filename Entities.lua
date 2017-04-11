@@ -27,6 +27,7 @@ function Player:new(x, y, is_chaser)
 	player = { 
 		x = x,
 		y = x,
+		is_chaser = is_chaser,
 		name = tostring(is_chaser) -- find other identifier
 	}
 	if is_chaser then
@@ -50,7 +51,7 @@ function Player:draw()
 	love.graphics.rectangle("fill", self.x, self.y, 20, 20)
 end
 
-function handleULRD(delta_time, player)
+function handleULRD(delta_time, player, world)
 	if love.keyboard.isDown("left") and not love.keyboard.isDown("right") then
 		player.velocity.speedX = player.velocity.speedX - player.velocity.delta * delta_time
 	elseif player.velocity.speedX < 0 then 
@@ -74,6 +75,9 @@ function handleULRD(delta_time, player)
 	end
 	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
 	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+
+	world:move()
+
 
 	player.x = player.x + player.velocity.speedX
 	player.y = player.y + player.velocity.speedY
