@@ -37,6 +37,7 @@ function check_exit()
     if love.keyboard.isDown("escape") then love.event.quit() end
 end
 
-function reset_position()
-    -- body
+function reset_position(entities)
+    entities.player1.x = 200; entities.player1.y = 200;
+    entities.player2.x = 400; entities.player2.y = 400;
 end

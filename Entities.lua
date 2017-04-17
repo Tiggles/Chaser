@@ -26,9 +26,9 @@ Player = {}
 function Player:new(x, y, is_chaser)
 	player = {
 		x = x,
-		y = x,
+		y = y,
 		is_chaser = is_chaser,
-		name = tostring(is_chaser), -- find other identifier
+		name = "player" .. tostring(is_chaser), -- find other identifier
 		score = 0
 	}
 	if is_chaser then
@@ -40,11 +40,11 @@ function Player:new(x, y, is_chaser)
 	return setmetatable(player, self)
 end
 
-function Player:update(player_number, delta_time)
+function Player:update(player_number, delta_time, world)
 	if 1 == player_number then
-		handleWASD(delta_time, self)
+		handleWASD(delta_time, self, world)
 	else
-		handleULRD(delta_time, self)
+		handleULRD(delta_time, self, world)
 	end
 end
 
@@ -92,11 +92,10 @@ function handleULRD(delta_time, player, world)
 	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
 	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
 
-	--world:move(player, )
+	local actualX, actualY, cols, len = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
 
-
-	player.x = player.x + player.velocity.speedX
-	player.y = player.y + player.velocity.speedY
+	player.x = actualX
+	player.y = actualY
 end
 
 function handleWASD(delta_time, player, world)
@@ -123,6 +122,8 @@ function handleWASD(delta_time, player, world)
 	end
 	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
 	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+
+	--world:move()
 
 	player.x = player.x + player.velocity.speedX
 	player.y = player.y + player.velocity.speedY
