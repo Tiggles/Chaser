@@ -19,7 +19,8 @@ function love.load(args)
 	update = menu_update
 	draw = menu_draw
 	menu_index = 0
-	menu_options = 1
+	menu_options = 2
+	next_menu_change = love.timer.getTime()
 end
 
 function love.update(delta_time)

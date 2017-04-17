@@ -12,10 +12,12 @@ function game_update(delta_time)
 end
 
 function menu_update( delta_time )
-	if love.keyboard.isDown("down") then
+	if love.keyboard.isDown("down") and love.timer.getTime() > next_menu_change then
 		menu_index = menu_index + 1
-	elseif love.keyboard.isDown("up") then
+		next_menu_change = love.timer.getTime() + 0.5
+	elseif love.keyboard.isDown("up") and love.timer.getTime() > next_menu_change then
 		menu_index = menu_index - 1
+		next_menu_change = love.timer.getTime() + 0.5
 	end
 	menu_index = menu_index % menu_options
 
@@ -41,12 +43,16 @@ function start(option)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		draw = game_draw
 		update = game_update
+	elseif 2 == option then
+		love.event.quit()
 	end
 end
 
 function menu_draw()
-	love.graphics.setColor(0, 0, 255)
-	love.graphics.printf( "2-players", options_x_start + math.cos(options_x) * 5, options_y_start, 200, "center" )
+	if 0 == menu_index then	love.graphics.setColor(0, 0, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	love.graphics.printf( "2-players", loc_x, options_y_start, 200, "center" )
+	if 1 == menu_index then	love.graphics.setColor(0, 0, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	love.graphics.printf( "exit", loc_x, options_y_start + 50, 200, "center" )
 
 end
 
