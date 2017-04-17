@@ -21,6 +21,10 @@ function love.load(args)
 	menu_index = 0
 	menu_options = 2
 	next_menu_change = love.timer.getTime()
+	gameboard =  {
+		width = 800,
+		height = 600
+	}
 end
 
 function love.update(delta_time)

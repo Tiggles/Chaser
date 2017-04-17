@@ -38,6 +38,14 @@ function check_exit()
 end
 
 function reset_position(entities)
-    entities.player1.x = 200; entities.player1.y = 200;
-    entities.player2.x = 400; entities.player2.y = 400;
+    val = math.random(2);
+    if 1 == val then
+        entities.player1.x = 250; entities.player1.y = 300;
+        entities.player2.x = 800 - 250; entities.player2.y = 300;
+    else
+        entities.player1.x = 200; entities.player1.y = 300;
+        entities.player2.x = 400; entities.player2.y = 300;
+    end
+    world:update(entities.player1, entities.player1.x, entities.player1.y)
+    world:update(entities.player1, entities.player2.x, entities.player2.y)
 end

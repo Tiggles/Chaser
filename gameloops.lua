@@ -1,10 +1,10 @@
 function menu_update( delta_time )
 	if love.keyboard.isDown("down") and love.timer.getTime() > next_menu_change then
 		menu_index = menu_index + 1
-		next_menu_change = love.timer.getTime() + 0.5
+		next_menu_change = love.timer.getTime() + 0.1
 	elseif love.keyboard.isDown("up") and love.timer.getTime() > next_menu_change then
 		menu_index = menu_index - 1
-		next_menu_change = love.timer.getTime() + 0.5
+		next_menu_change = love.timer.getTime() + 0.1
 	end
 	menu_index = menu_index % menu_options
 
@@ -21,14 +21,15 @@ function menu_start(option)
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
 		entities = {
-			player1 = Player:new(200, 200, false),
-			player2 = Player:new(300, 200, true),
+			player1 = Player:new(250, 300, false),
+			player2 = Player:new(800-250, 300, true),
 			map = init_random_map(),
 			score = nil
 		}
 		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
+
 		Score:setupTimer()
 		draw = countdown_draw
 		update = countdown_update
