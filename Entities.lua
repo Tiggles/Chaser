@@ -24,11 +24,12 @@ end
 Player = {}
 
 function Player:new(x, y, is_chaser)
-	player = { 
+	player = {
 		x = x,
 		y = x,
 		is_chaser = is_chaser,
-		name = tostring(is_chaser) -- find other identifier
+		name = tostring(is_chaser), -- find other identifier
+		score = 0
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -47,8 +48,23 @@ function Player:update(player_number, delta_time)
 	end
 end
 
+function Player:swap_chaser()
+	self.is_chaser = not self.is_chaser
+end
+
+function Player:add_point()
+	if self.is_chaser then
+		self.score = self.score + 1
+	end
+end
+
 function Player:draw()
-	love.graphics.rectangle("fill", self.x, self.y, 20, 20)
+	if self.is_chaser then
+		drawmode = "fill"
+	else
+		drawmode = "line"
+	end
+	love.graphics.rectangle(drawmode, self.x, self.y, 20, 20)
 end
 
 function handleULRD(delta_time, player, world)
@@ -62,7 +78,7 @@ function handleULRD(delta_time, player, world)
 	elseif player.velocity.speedX > 0 then
 		player.velocity.speedX = math.max(player.velocity.speedX - (player.velocity.delta * 2 * delta_time), 0)
 	end
-	--Vertical movement
+	
 	if love.keyboard.isDown("up") and not love.keyboard.isDown("down") then
 		player.velocity.speedY = player.velocity.speedY - player.velocity.delta * delta_time
 	elseif player.velocity.speedY < 0 then 
@@ -76,14 +92,14 @@ function handleULRD(delta_time, player, world)
 	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
 	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
 
-	world:move()
+	--world:move(player, )
 
 
 	player.x = player.x + player.velocity.speedX
 	player.y = player.y + player.velocity.speedY
 end
 
-function handleWASD(delta_time, player)
+function handleWASD(delta_time, player, world)
 	if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then
 		player.velocity.speedX = player.velocity.speedX - player.velocity.delta * delta_time
 	elseif player.velocity.speedX < 0 then 
@@ -94,7 +110,7 @@ function handleWASD(delta_time, player)
 	elseif player.velocity.speedX > 0 then
 		player.velocity.speedX = math.max(player.velocity.speedX - (player.velocity.delta * 2 * delta_time), 0)
 	end
-	--Vertical movement
+	
 	if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then
 		player.velocity.speedY = player.velocity.speedY - player.velocity.delta * delta_time
 	elseif player.velocity.speedY < 0 then 

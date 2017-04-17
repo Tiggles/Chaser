@@ -1,5 +1,4 @@
-function check_collision(a, b)
-	function check_collision(self, other)
+function check_collision(self, other)
 	local self_left = self.x
     local self_right = self.x + 20
     local self_top = self.y
@@ -19,8 +18,25 @@ function check_collision(a, b)
         return false
     end
 end
-end
 
 function init_random_map(world)
 
+end
+
+function swap_chaser(entities)
+    entities.player1:swap_chaser()
+    entities.player2:swap_chaser()
+end
+
+function add_point()
+    entities.player1:add_point()
+    entities.player2:add_point()
+end
+
+function check_exit()
+    if love.keyboard.isDown("escape") then love.event.quit() end
+end
+
+function reset_position()
+    -- body
 end
