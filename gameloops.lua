@@ -1,16 +1,3 @@
-function game_update(delta_time)
-	entities.player1:update(1, delta_time, world)
-	entities.player2:update(2, delta_time, world)
-	if check_collision(entities.player1, entities.player2) then
-		add_point(entities)
-		reset_position(entities)
-	end
-	if swap_time < love.timer.getTime() then
-		swap_chaser(entities)
-		swap_time = love.timer.getTime() + math.random(5) + 3 
-	end
-end
-
 function menu_update( delta_time )
 	if love.keyboard.isDown("down") and love.timer.getTime() > next_menu_change then
 		menu_index = menu_index + 1
@@ -22,14 +9,14 @@ function menu_update( delta_time )
 	menu_index = menu_index % menu_options
 
 	if love.keyboard.isDown("return") then
-		start(menu_index + LUA_INDEX_OFFSET)
+		menu_start(menu_index + LUA_INDEX_OFFSET)
 	end
 
 	options_x = options_x + delta_time * 3
 
 end
 
-function start(option)
+function menu_start(option)
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
@@ -41,8 +28,9 @@ function start(option)
 		}
 		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
-		draw = game_draw
-		update = game_update
+		count_down = 3
+		draw = countdown_draw
+		update = countdown_update
 	elseif 2 == option then
 		love.event.quit()
 	end
@@ -62,4 +50,34 @@ function game_draw()
 	love.graphics.setColor(0, 255, 0)
 	entities.player2:draw()
 	love.graphics.setColor(255, 255, 255)
+end
+
+function game_update(delta_time)
+	entities.player1:update(1, delta_time, world)
+	entities.player2:update(2, delta_time, world)
+	if check_collision(entities.player1, entities.player2) then
+		add_point(entities)
+		reset_position(entities)
+		count_down = 3
+		update = countdown_update
+		draw = countdown_draw
+	end
+	if swap_time < love.timer.getTime() then
+		swap_chaser(entities)
+		swap_time = love.timer.getTime() + math.random(5) + 3 
+	end
+end
+
+function countdown_update( delta_time )
+	if count_down < 0 then
+		update = game_update
+		draw = game_draw
+	end
+	count_down = count_down - delta_time
+end
+
+function countdown_draw()
+	game_draw()
+	love.graphics.setColor(255,255,255)
+	love.graphics.printf( math.ceil(count_down), options_x_start, options_y_start, 200, "center" )
 end
