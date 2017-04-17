@@ -29,8 +29,8 @@ function swap_chaser(entities)
 end
 
 function add_point()
-    entities.player1:add_point()
-    entities.player2:add_point()
+    entities.player1:add_point(1)
+    entities.player2:add_point(2)
 end
 
 function check_exit()

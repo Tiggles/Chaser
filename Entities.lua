@@ -28,8 +28,7 @@ function Player:new(x, y, is_chaser)
 		x = x,
 		y = y,
 		is_chaser = is_chaser,
-		name = "player" .. tostring(is_chaser), -- find other identifier
-		score = 0
+		name = "player" .. tostring(is_chaser)
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -52,9 +51,13 @@ function Player:swap_chaser()
 	self.is_chaser = not self.is_chaser
 end
 
-function Player:add_point()
+function Player:add_point(player_number)
 	if self.is_chaser then
-		self.score = self.score + 1
+		if 1 == player_number then
+			Score.score_count.player1score = Score.score_count.player1score + 1
+		elseif 2 == player_number then
+			Score.score_count.player2score = Score.score_count.player2score + 1
+		end
 	end
 end
 

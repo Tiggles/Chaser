@@ -29,6 +29,7 @@ function menu_start(option)
 		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
+		Score:setupTimer()
 		draw = countdown_draw
 		update = countdown_update
 	elseif 2 == option then
@@ -50,6 +51,7 @@ function game_draw()
 	love.graphics.setColor(0, 255, 0)
 	entities.player2:draw()
 	love.graphics.setColor(255, 255, 255)
+	Score:drawScore()
 end
 
 function game_update(delta_time)

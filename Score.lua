@@ -17,7 +17,7 @@ Score = {
 		text_align = 'left',
 		prefix = 'Score: ',
 		font_size = 26,
-		position = { x = 0, y = 0 },
+		position = { x = 300, y = 50 },
 		font = nil,
 		score_points_queue = {},
 	}
@@ -89,7 +89,6 @@ function Score:getCurrentGameTime()
 end
 
 function Score:drawTimer()
-
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), self.timer.position.x, 
@@ -125,18 +124,18 @@ function Score:updateScoreCount(dt)
 	end
 end
 
-function Score:drawScoreCount()
+function Score:drawScoreCountPlayer1()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%05d", self.score_count.current_score), self.score_count.position.x,
+	love.graphics.printf(self.score_count.prefix .. string.format("%05d", self.score_count.player1score), self.score_count.position.x,
 		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
 	love.graphics.setFont(old_font)
 end
 
-function Score:drawMultiplier()
+function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(string.format("%i", self.score_count.multiplier.multiplier) .. self.score_count.multiplier.multiplier_suffix, self.score_count.multiplier.position.x,
-		self.score_count.multiplier.position.y, self.score_count.overflow_limit, self.score_count.text_align)
+	love.graphics.printf(self.score_count.player1score .. ":" .. self.score_count.player2score, self.score_count.position.x,
+		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
 	love.graphics.setFont(old_font)
 end
