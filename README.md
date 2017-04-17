@@ -12,8 +12,10 @@ Arrow Keys
 ### Player 2 controls:
 WASD
 
-#TODO:
+# TODO:
 
 1. Obstacles
 2. World boundary
 3. Fix bump addition to repo
+4. End time
+5. End time selection from menu
