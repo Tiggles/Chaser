@@ -135,7 +135,7 @@ end
 function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.player1score .. ":" .. self.score_count.player2score, self.score_count.position.x,
-		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
+	love.graphics.setColor(255, 0, 0)
+	--self:drawScoreCountPlayer1()
 	love.graphics.setFont(old_font)
 end

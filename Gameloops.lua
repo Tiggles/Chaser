@@ -21,11 +21,20 @@ function menu_start(option)
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
 		entities = {
-			player1 = Player:new(250, 300, false),
-			player2 = Player:new(800-250, 300, true),
+			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), false),
+			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), true),
 			map = init_random_map(),
 			score = nil
 		}
+		
+		--for i = 1, #entities.map.boxes do
+		--	world:add(entities.map.boxes[i], entities.map.boxes[i].x, entities.map.boxes[i].y, entities.map.boxes[i].height, entities.map.boxes[i].width)
+		--end
+
+		for i = 1, #entities.map.boundaries do
+			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
+		end
+
 		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
@@ -39,7 +48,13 @@ function menu_start(option)
 end
 
 function menu_draw()
-	if 0 == menu_index then	love.graphics.setColor(0, 0, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	if 0 == menu_index then	
+		love.graphics.setColor(0, 0, 255);
+		loc_x = options_x_start + math.cos(options_x) * 5
+	else 
+		love.graphics.setColor(255, 255, 255); 
+		loc_x = options_x_start 
+	end
 	love.graphics.printf( "2-players", loc_x, options_y_start, 200, "center" )
 	if 1 == menu_index then	love.graphics.setColor(0, 0, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
 	love.graphics.printf( "exit", loc_x, options_y_start + 50, 200, "center" )
@@ -62,6 +77,7 @@ function game_update(delta_time)
 		add_point(entities)
 		reset_position(entities)
 		count_down = 3
+		swap_time = swap_time + 3
 		update = countdown_update
 		draw = countdown_draw
 	end

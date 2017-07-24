@@ -13,12 +13,26 @@ function Velocity:new(delta, max_min)
 	return setmetatable(newVelocity, self)
 end
 
-function Velocity:chaser()
-	return Velocity:new(7, 6)
+function Velocity:chaser(old_velocity)
+	if old_velocity ~= nil then
+		vel = Velocity:new(7, 6)
+		vel.speedX = old_velocity.speedX
+		vel.speedY = old_velocity.speedY
+		return vel
+	else
+		return Velocity:new(7, 6)
+	end
 end
 
-function Velocity:chasee()
-	return Velocity:new(6, 5)
+function Velocity:chasee(old_velocity)
+	if old_velocity ~= nil then
+		vel = Velocity:new(6, 5)
+		vel.speedX = old_velocity.speedX
+		vel.speedY = old_velocity.speedY
+		return vel
+	else
+		return Velocity:new(6, 5)
+	end
 end
 
 Player = {}
@@ -50,9 +64,9 @@ end
 function Player:swap_chaser()
 	self.is_chaser = not self.is_chaser
 	if self.is_chaser then
-		self.velocity = Velocity:chaser()
+		self.velocity = Velocity:chaser(self.velocity)
 	else
-		self.velocity = Velocity:chasee()
+		self.velocity = Velocity:chasee(self.velocity)
 	end
 end
 
@@ -66,7 +80,7 @@ function Player:add_point(player_number)
 	end
 end
 
-function Player:draw()
+function Player:draw(camera)
 	if self.is_chaser then
 		drawmode = "fill"
 	else

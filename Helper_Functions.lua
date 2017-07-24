@@ -19,8 +19,22 @@ function check_collision(self, other)
     end
 end
 
-function init_random_map(world)
+function init_random_map()
+    boundaries = {}
+    --Left
+    table.insert(boundaries, { x = -1, y = 0, width = 1, height = gameboard.height })
+    --Top
+    table.insert(boundaries, { x = 0, y = -1, width = gameboard.width, height = 1 })
+    -- Right
+    table.insert(boundaries, { x = gameboard.width, y = 0, width = 1, height = gameboard.height })
+    -- Bottom
+    table.insert(boundaries, { x = 0, y = gameboard.height, width = gameboard.width, height = 1 })
 
+    map = {
+        boundaries = boundaries,
+        boxes = nil
+    }
+    return map
 end
 
 function swap_chaser(entities)
@@ -40,11 +54,11 @@ end
 function reset_position(entities)
     val = math.random(2);
     if 1 == val then
-        entities.player2.x = 250; entities.player2.y = 300;
-        entities.player1.x = 800 - 250; entities.player1.y = 300;
+        entities.player2.x = gameboard.width * (1/3); entities.player2.y = gameboard.height * (1/2);
+        entities.player1.x = gameboard.width * (2/3); entities.player1.y = gameboard.height * (1/2);
     else
-        entities.player2.x = 200; entities.player2.y = 300;
-        entities.player1.x = 800 - 250; entities.player2.y = 300;
+        entities.player1.x = gameboard.width * (1/3); entities.player1.y = gameboard.height * (1/2);
+        entities.player2.x = gameboard.width * (2/3); entities.player2.y = gameboard.height * (1/2);
     end
     world:update(entities.player1, entities.player1.x, entities.player1.y)
     world:update(entities.player2, entities.player2.x, entities.player2.y)

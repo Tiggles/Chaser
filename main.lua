@@ -1,7 +1,7 @@
 require "Entities"
 require "Helper_Functions"
 require "Score"
-require "gameloops"
+require "Gameloops"
 bump = require 'bump/bump'
 
 LUA_INDEX_OFFSET = 1
@@ -12,9 +12,9 @@ function love.focus(focus)
 end
 
 function love.load(args)
-	options_x_start = 300
+	options_x_start = 1280 / 2 - 100
 	options_x = options_x_start
-	options_y_start = 200
+	options_y_start = 300
 	in_focus = false
 	update = menu_update
 	draw = menu_draw
@@ -22,16 +22,25 @@ function love.load(args)
 	menu_options = 2
 	next_menu_change = love.timer.getTime()
 	gameboard =  {
-		width = 800,
-		height = 600
+		width = 1280,
+		height = 720
 	}
+	horisontal_draw_scale = 1
+	vertical_draw_scale = 1
+	love.window.setMode( gameboard.width, gameboard.height, { resizable = true } )
 end
 
 function love.update(delta_time)
-	check_exit()
+	check_exit(entities)
 	update(delta_time)
 end
 
 function love.draw()
+	love.graphics.scale(horisontal_draw_scale, vertical_draw_scale)
 	draw()
+end
+
+function love.resize(width, height)
+	horisontal_draw_scale = width / gameboard.width
+	vertical_draw_scale = height / gameboard.height
 end
