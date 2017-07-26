@@ -155,7 +155,7 @@ function Score:drawScoreCountPlayer3()
 end
 
 function Score:drawScoreCountPlayer4()
-	love.graphics.setColor(0, 255, 255)
+	love.graphics.setColor(255, 255, 0)
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player3score), self.score_count.position.x + 500,

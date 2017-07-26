@@ -41,8 +41,6 @@ function menu_start(option) -- TODO refactor branching statements for different 
 		update = countdown_update
 		player_count = 2
 	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
-		swap_time = love.timer.getTime() + math.random(5) + 3
-		world = bump.newWorld(64)
 		chaser = math.floor(math.random(3))
 		entities = {
 			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser),
@@ -51,6 +49,9 @@ function menu_start(option) -- TODO refactor branching statements for different 
 			map = init_random_map(),
 			score = nil
 		}
+		
+		swap_time = love.timer.getTime() + math.random(5) + 3
+		world = bump.newWorld(64)
 		
 		for i = 1, #entities.map.boundaries do
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
@@ -68,6 +69,35 @@ function menu_start(option) -- TODO refactor branching statements for different 
 		
 		player_count = 3
 	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
+		chaser = math.floor(math.random(4))
+
+		entities = {
+			player1 = Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser), 
+			player2 = Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser),
+			player3 = Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser),
+			player4 = Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser),
+			map = init_random_map(),
+			score = nil
+		}
+
+		swap_time = love.timer.getTime() + math.random(5) + 3
+		world = bump.newWorld(64)
+		
+		for i = 1, #entities.map.boundaries do
+			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
+		end
+
+		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
+		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
+		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
+		world:add(entities.player4, entities.player4.x, entities.player4.y, 20, 20)
+
+		count_down = 3
+
+		Score:setupTimer(game_time, nil, 20, options_x_start)
+		draw = countdown_draw
+		update = countdown_update
+
 		player_count = 4
 	elseif 4 == option then
 		love.event.quit()

@@ -67,7 +67,7 @@ function Player:update(player_number, delta_time, world) -- Redo with function p
 			handle_joystick(1, delta_time)
 		end
 	elseif 4 == self.player_number then
-		if love.joystick.getNumJoysticks > 1 then
+		if love.joystick.getJoystickCount() > 1 then
 			handle_joystick(2, delta_time)
 		end
 	end
