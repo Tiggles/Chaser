@@ -39,7 +39,8 @@ function menu_start(option)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
 
-		Score:setupTimer()
+		Score:setupTimer(start_time, font, font_size, position)
+		Score:setupTimer(120, nil, 20, options_x_start)
 		draw = countdown_draw
 		update = countdown_update
 	elseif 2 == option then
@@ -49,14 +50,14 @@ end
 
 function menu_draw()
 	if 0 == menu_index then	
-		love.graphics.setColor(0, 0, 255);
+		love.graphics.setColor(0, 200, 255);
 		loc_x = options_x_start + math.cos(options_x) * 5
 	else 
 		love.graphics.setColor(255, 255, 255); 
 		loc_x = options_x_start 
 	end
-	love.graphics.printf( "2-players", loc_x, options_y_start, 200, "center" )
-	if 1 == menu_index then	love.graphics.setColor(0, 0, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	love.graphics.printf( "2-player", loc_x, options_y_start, 200, "center" )
+	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
 	love.graphics.printf( "exit", loc_x, options_y_start + 50, 200, "center" )
 
 end
@@ -66,6 +67,14 @@ function game_draw()
 	entities.player1:draw()
 	love.graphics.setColor(0, 255, 0)
 	entities.player2:draw()
+	if entities.player3 ~= nil then
+		love.graphics.setColor(0, 0, 255)
+		entities.player3:draw()
+	end
+	if entities.player4 ~= nil then
+		love.graphics.setColor(255, 255, 0)
+		entities.player4:draw()
+	end
 	love.graphics.setColor(255, 255, 255)
 	Score:drawScore()
 end
@@ -86,11 +95,11 @@ function game_update(delta_time)
 		swap_time = love.timer.getTime() + math.random(5) + 3
 		end_time = end_time + 3
 	end
-	if end_time < 0 then
+	if Score:getCurrentGameTime() < 0 then
 		draw = score_draw
 		update = score_update
 	end
-	end_time = end_time - delta_time
+	Score:updateTimer(delta_time)
 end
 
 function countdown_update( delta_time )
@@ -110,6 +119,7 @@ end
 function score_draw( )
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
+	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
 	if entities.player1 ~= nil then
 		love.graphics.setColor(255, 0, 0)
 		love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
@@ -118,7 +128,28 @@ function score_draw( )
 		love.graphics.setColor(0, 255, 0)
 		love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
 	end
+	if entities.player3 ~= nil then
+		love.graphics.setColor(0, 0, 255)
+		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )
+	end
+	if entities.player4 ~= nil then
+		love.graphics.setColor(255, 255, 0)
+		love.graphics.printf( "Player 4: " .. Score.score_count.player4score, options_x_start, options_y_start + 80, 200, "center" )
+	end
 end
 
 function score_update(  )
+	if time == nil then
+		time = love.timer.getTime() + 0.5
+	end
+	if time < love.timer.getTime() then
+		if love.keyboard.isDown("escape") then
+			love.event.quit()
+		end
+		if love.keyboard.isDown("space") then
+			time = nil
+			update = menu_update
+			draw = menu_draw
+		end
+	end
 end

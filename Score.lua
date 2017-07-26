@@ -2,7 +2,7 @@
 Score = {
 	timer = {
 		font_size = 26,
-		countType = 'up',
+		countType = 'down',
 		text_align = 'left',
 		font = nil,
 		position = { x = 0, y = 0 },
@@ -38,7 +38,7 @@ function Score:setupTimer(start_time, font, font_size, position)
 	self.timer.font_size = font_size ~= nil and font_size or 24
 	self.timer.current_time = start_time ~= nil and start_time or 0
 	
-	if self.timer.font == nil then
+	if font == nil then
 		self.timer.font = love.graphics.newFont("Assets/PressStart2P.ttf", 
 			self.timer.font_size)
 	else
@@ -91,8 +91,8 @@ end
 function Score:drawTimer()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), self.timer.position.x, 
-		self.timer.position.y, self.timer.overflow_limit, self.timer.text_align)
+	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), 1920 / 20 - 30, 30, --self.timer.position.x, self.timer.position.y, -- TODO, fix placemet
+		self.timer.overflow_limit, self.timer.text_align)
 	love.graphics.setFont(old_font)
 end
 
@@ -127,7 +127,15 @@ end
 function Score:drawScoreCountPlayer1()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%05d", self.score_count.player1score), self.score_count.position.x,
+	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player1score), self.score_count.position.x,
+		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
+	love.graphics.setFont(old_font)
+end
+
+function Score:drawScoreCountPlayer2()
+	local old_font = love.graphics.getFont()
+	love.graphics.setFont(self.timer.font)
+	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player2score), self.score_count.position.x + 500,
 		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
 	love.graphics.setFont(old_font)
 end
@@ -136,6 +144,9 @@ function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.setColor(255, 0, 0)
-	--self:drawScoreCountPlayer1()
+	self:drawScoreCountPlayer1()
+	love.graphics.setColor(0, 255, 0)
+	self:drawScoreCountPlayer2()
+	self:drawTimer()
 	love.graphics.setFont(old_font)
 end
