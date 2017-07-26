@@ -63,12 +63,12 @@ function Player:update(player_number, delta_time, world) -- Redo with function p
 	elseif 2 == self.player_number then
 		handleULRD(delta_time, self, world)
 	elseif 3 == self.player_number then
-		if #love.joystick.getJoysticks() > 0 then
-			handle_joystick(1)
+		if love.joystick.getJoystickCount() > 0 then
+			handle_joystick(1, delta_time)
 		end
 	elseif 4 == self.player_number then
-		if #love.joystick.getJoysticks() > 1 then
-			handle_joystick(2)
+		if love.joystick.getNumJoysticks > 1 then
+			handle_joystick(2, delta_time)
 		end
 	end
 end
@@ -162,6 +162,36 @@ function handleWASD(delta_time, player, world)
 	player.y = actualY
 end
 
-function handle_joystick( joystick_number )
-	-- body
+function handle_joystick( joystick_number, delta_time )
+	local current_joystick = love.joystick.getJoysticks()[joystick_number]
+	player = {}
+	if 1 == joystick_number then player = entities.player3 else player = entities.player4 end
+
+	-- actual movement
+	local left_right_axis = current_joystick:getAxis(1)
+	local up_down_axis = current_joystick:getAxis(2)
+
+	if left_right_axis > 0.2 or left_right_axis < -0.2 then
+		player.velocity.speedX = player.velocity.speedX - player.velocity.delta * (left_right_axis * -1) * delta_time	
+	elseif player.velocity.speedX < 0 then 
+		player.velocity.speedX = math.min(player.velocity.speedX + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedX > 0 then
+		player.velocity.speedX = math.max(player.velocity.speedX - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	if up_down_axis > 0.2 or up_down_axis < -0.2 then
+		player.velocity.speedY = player.velocity.speedY - player.velocity.delta * (up_down_axis * -1) * delta_time
+	elseif player.velocity.speedY < 0 then 
+		player.velocity.speedY = math.min(player.velocity.speedY + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedY > 0 then 
+		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
+	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+
+	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
+
+	player.x = actualX
+	player.y = actualY
 end
