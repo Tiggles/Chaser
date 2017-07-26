@@ -35,14 +35,18 @@ function Velocity:chasee(old_velocity)
 	end
 end
 
+function Velocity:resetSpeed()
+	self.speedX = 0; self.speedY = 0;
+end
+
 Player = {}
 
-function Player:new(x, y, is_chaser)
+function Player:new(x, y, player_number, is_chaser)
 	player = {
 		x = x,
 		y = y,
-		is_chaser = is_chaser,
-		name = "player" .. tostring(is_chaser)
+		name = "player" .. tostring(player_number),
+		player_number = player_number
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -53,17 +57,24 @@ function Player:new(x, y, is_chaser)
 	return setmetatable(player, self)
 end
 
-function Player:update(player_number, delta_time, world)
-	if 1 == player_number then
+function Player:update(player_number, delta_time, world) -- Redo with function pointers instead?
+	if 1 == self.player_number then
 		handleWASD(delta_time, self, world)
-	else
+	elseif 2 == self.player_number then
 		handleULRD(delta_time, self, world)
+	elseif 3 == self.player_number then
+		if #love.joystick.getJoysticks() > 0 then
+			handle_joystick(1)
+		end
+	elseif 4 == self.player_number then
+		if #love.joystick.getJoysticks() > 1 then
+			handle_joystick(2)
+		end
 	end
 end
 
 function Player:swap_chaser()
-	self.is_chaser = not self.is_chaser
-	if self.is_chaser then
+	if self.player_number == chaser then
 		self.velocity = Velocity:chaser(self.velocity)
 	else
 		self.velocity = Velocity:chasee(self.velocity)
@@ -71,7 +82,7 @@ function Player:swap_chaser()
 end
 
 function Player:add_point(player_number)
-	if self.is_chaser then
+	if self.player_number == chaser then
 		if 1 == player_number then
 			Score.score_count.player1score = Score.score_count.player1score + 1
 		elseif 2 == player_number then
@@ -81,7 +92,7 @@ function Player:add_point(player_number)
 end
 
 function Player:draw(camera)
-	if self.is_chaser then
+	if self.player_number == chaser then
 		drawmode = "fill"
 	else
 		drawmode = "line"
@@ -145,8 +156,12 @@ function handleWASD(delta_time, player, world)
 	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
 	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
 
-	local actualX, actualY, cols, len = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
+	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
 
 	player.x = actualX
 	player.y = actualY
+end
+
+function handle_joystick( joystick_number )
+	-- body
 end

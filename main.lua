@@ -12,22 +12,23 @@ function love.focus(focus)
 end
 
 function love.load(args)
-	options_x_start = 1280 / 2 - 100
-	options_x = options_x_start
-	options_y_start = 300
+	game_time = 120
 	in_focus = false
 	update = menu_update
 	draw = menu_draw
 	menu_index = 0
-	menu_options = 2
+	menu_options = 4
 	next_menu_change = love.timer.getTime()
 	gameboard =  {
 		width = 1280,
 		height = 720
 	}
+	options_x_start = gameboard.width / 2 - 100
+	options_x = options_x_start
+	options_y_start = 300
 	horisontal_draw_scale = 1
 	vertical_draw_scale = 1
-	love.window.setMode( gameboard.width, gameboard.height, { resizable = true } )
+	love.window.setMode( gameboard.width, gameboard.height, { resizable = true, fullscreen = false } )
 end
 
 function love.update(delta_time)

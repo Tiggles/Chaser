@@ -13,6 +13,8 @@ Score = {
 	score_count = {
 		player1score = 0,
 		player2score = 0,
+		player3score = 0,
+		player4score = 0,
 		overflow_limit = 2000,
 		text_align = 'left',
 		prefix = 'Score: ',
@@ -140,6 +142,24 @@ function Score:drawScoreCountPlayer2()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player2score), self.score_count.position.x + 500,
 		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
+	love.graphics.setFont(old_font)
+end
+
+function Score:drawScoreCountPlayer3()
+	love.graphics.setColor(0, 0, 255)
+	local old_font = love.graphics.getFont()
+	love.graphics.setFont(self.timer.font)
+	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player3score), self.score_count.position.x,
+		gameboard.height - self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
+	love.graphics.setFont(old_font)
+end
+
+function Score:drawScoreCountPlayer4()
+	love.graphics.setColor(0, 255, 255)
+	local old_font = love.graphics.getFont()
+	love.graphics.setFont(self.timer.font)
+	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player3score), self.score_count.position.x + 500,
+		gameboard.height - self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
 	love.graphics.setFont(old_font)
 end
 

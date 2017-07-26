@@ -16,21 +16,18 @@ function menu_update( delta_time )
 
 end
 
-function menu_start(option)
+function menu_start(option) -- TODO refactor branching statements for different player counts
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
+		chaser = math.floor(math.random(2))
 		entities = {
-			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), false),
-			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), true),
+			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser),
+			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser),
 			map = init_random_map(),
 			score = nil
 		}
-		end_time = 2
-		--for i = 1, #entities.map.boxes do
-		--	world:add(entities.map.boxes[i], entities.map.boxes[i].x, entities.map.boxes[i].y, entities.map.boxes[i].height, entities.map.boxes[i].width)
-		--end
-
+				
 		for i = 1, #entities.map.boundaries do
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
@@ -39,11 +36,40 @@ function menu_start(option)
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
 
-		Score:setupTimer(start_time, font, font_size, position)
-		Score:setupTimer(120, nil, 20, options_x_start)
+		Score:setupTimer(game_time, nil, 20, options_x_start)
 		draw = countdown_draw
 		update = countdown_update
-	elseif 2 == option then
+		player_count = 2
+	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
+		swap_time = love.timer.getTime() + math.random(5) + 3
+		world = bump.newWorld(64)
+		chaser = math.floor(math.random(3))
+		entities = {
+			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser),
+			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser),
+			player3 = Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser),
+			map = init_random_map(),
+			score = nil
+		}
+		
+		for i = 1, #entities.map.boundaries do
+			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
+		end
+
+		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
+		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
+		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
+
+		count_down = 3
+
+		Score:setupTimer(game_time, nil, 20, options_x_start)
+		draw = countdown_draw
+		update = countdown_update
+		
+		player_count = 3
+	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
+		player_count = 4
+	elseif 4 == option then
 		love.event.quit()
 	end
 end
@@ -57,9 +83,18 @@ function menu_draw()
 		love.graphics.setColor(255, 255, 255); 
 		loc_x = options_x_start 
 	end
-	love.graphics.printf( "2-player", loc_x, options_y_start, 200, "center" )
+	love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
+	
 	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	love.graphics.printf( "exit", loc_x, options_y_start + 50, 200, "center" )
+	if 0 == #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
+	love.graphics.printf( "3-player (requires one controller)", loc_x, options_y_start + 100, 200, "center" )
+	
+	if 2 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	if 2 > #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
+	love.graphics.printf( "4-player (requires two controllers)", loc_x, options_y_start + 150, 200, "center" )
+	
+	if 3 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	love.graphics.printf( "exit", loc_x, options_y_start + 200, 200, "center" )
 
 end
 
@@ -84,18 +119,14 @@ end
 function game_update(delta_time)
 	entities.player1:update(1, delta_time, world)
 	entities.player2:update(2, delta_time, world)
-	if check_collision(entities.player1, entities.player2) then
-		add_point(entities)
-		reset_position(entities)
-		count_down = 3
-		swap_time = swap_time + 3
-		update = countdown_update
-		draw = countdown_draw
-	end
+	if entities.player3 ~= nil then entities.player3:update(3, delta_time, world) end
+	if entities.player4 ~= nil then entities.player4:update(4, delta_time, world) end
+	handle_collisions( chaser )
 	if swap_time < love.timer.getTime() then
+		print("Swapping. Chaser is " .. chaser)
 		swap_chaser(entities)
+		print("Swapoed. Chaser is " .. chaser)
 		swap_time = love.timer.getTime() + math.random(5) + 3
-		end_time = end_time + 3
 	end
 	if Score:getCurrentGameTime() < 0 then
 		draw = score_draw
@@ -146,9 +177,6 @@ function score_update()
 		time = love.timer.getTime() + 0.5
 	end
 	if time < love.timer.getTime() then
-		if love.keyboard.isDown("escape") then
-			love.event.quit()
-		end
 		if love.keyboard.isDown("space") then
 			time = nil
 			update = menu_update
