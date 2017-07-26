@@ -26,7 +26,7 @@ function menu_start(option)
 			map = init_random_map(),
 			score = nil
 		}
-		
+		end_time = 2
 		--for i = 1, #entities.map.boxes do
 		--	world:add(entities.map.boxes[i], entities.map.boxes[i].x, entities.map.boxes[i].y, entities.map.boxes[i].height, entities.map.boxes[i].width)
 		--end
@@ -83,8 +83,14 @@ function game_update(delta_time)
 	end
 	if swap_time < love.timer.getTime() then
 		swap_chaser(entities)
-		swap_time = love.timer.getTime() + math.random(5) + 3 
+		swap_time = love.timer.getTime() + math.random(5) + 3
+		end_time = end_time + 3
 	end
+	if end_time < 0 then
+		draw = score_draw
+		update = score_update
+	end
+	end_time = end_time - delta_time
 end
 
 function countdown_update( delta_time )
@@ -99,4 +105,20 @@ function countdown_draw()
 	game_draw()
 	love.graphics.setColor(255,255,255)
 	love.graphics.printf( math.ceil(count_down), options_x_start, options_y_start, 200, "center" )
+end
+
+function score_draw( )
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
+	if entities.player1 ~= nil then
+		love.graphics.setColor(255, 0, 0)
+		love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
+	end
+	if entities.player2 ~= nil then
+		love.graphics.setColor(0, 255, 0)
+		love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
+	end
+end
+
+function score_update(  )
 end
