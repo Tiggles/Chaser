@@ -89,6 +89,7 @@ function Score:getCurrentGameTime()
 end
 
 function Score:drawTimer()
+	love.graphics.setColor(255, 255, 255)
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), gameboard.width / 2 - 100, 30, --self.timer.position.x, self.timer.position.y, -- TODO, fix placemet
@@ -125,6 +126,7 @@ function Score:updateScoreCount(dt)
 end
 
 function Score:drawScoreCountPlayer1()
+	love.graphics.setColor(255, 0, 0)
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player1score), self.score_count.position.x,
@@ -133,6 +135,7 @@ function Score:drawScoreCountPlayer1()
 end
 
 function Score:drawScoreCountPlayer2()
+	love.graphics.setColor(0, 255, 0)
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player2score), self.score_count.position.x + 500,
@@ -140,14 +143,21 @@ function Score:drawScoreCountPlayer2()
 	love.graphics.setFont(old_font)
 end
 
+function Score:drawPlayers()
+	self:drawScoreCountPlayer1()
+	self:drawScoreCountPlayer2()
+	if entities.player3 ~= nil then
+		self:drawScoreCountPlayer3()
+	end
+	if entities.player4 ~= nil then
+		self:drawScoreCountPlayer4()
+	end
+end
+
 function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.setColor(255, 0, 0)
-	self:drawScoreCountPlayer1()
-	love.graphics.setColor(0, 255, 0)
-	self:drawScoreCountPlayer2()
-	love.graphics.setColor(255, 255, 255)
+	self:drawPlayers()
 	self:drawTimer()
 	love.graphics.setFont(old_font)
 end
