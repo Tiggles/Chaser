@@ -7,10 +7,10 @@ Randomly chosen, one player is selected as chaser, who must catch the other play
 Points are awarded when the chaser catches the chasee.
 
 ### Player 1 controls:
-Arrow Keys
+WASD
 
 ### Player 2 controls:
-WASD
+Arrow Keys
 
 ### Player 3 controls
 
