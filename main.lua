@@ -12,6 +12,7 @@ function love.focus(focus)
 end
 
 function love.load(args)
+	catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg")
 	game_time = 120
 	in_focus = false
 	update = menu_update

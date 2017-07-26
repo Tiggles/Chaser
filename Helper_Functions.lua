@@ -143,6 +143,7 @@ function handle_collisions( player )
     local player, others = get_players_to_compare( player )
     for i = 1, #others do
         if check_collision(player, others[i]) then
+            catch_sound:play()
             add_point(entities)
             reset_position(entities)
             count_down = 3

@@ -9,14 +9,14 @@ function menu_update( delta_time )
 	menu_index = menu_index % menu_options
 
 	if love.keyboard.isDown("return") then
+		next_menu_change = love.timer.getTime() + 1
 		menu_start(menu_index + LUA_INDEX_OFFSET)
 	end
 
 	options_x = options_x + delta_time * 3
-
 end
 
-function menu_start(option) -- TODO refactor branching statements for different player counts
+function menu_start( option ) -- TODO refactor branching statements for different player counts
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
@@ -36,9 +36,8 @@ function menu_start(option) -- TODO refactor branching statements for different 
 		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
 
-		Score:setupTimer(game_time, nil, 20, options_x_start)
-		draw = countdown_draw
-		update = countdown_update
+		draw = menu_time_draw
+		update = menu_time_update
 		player_count = 2
 	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
 		chaser = love.math.random( 3 )
@@ -63,9 +62,8 @@ function menu_start(option) -- TODO refactor branching statements for different 
 
 		count_down = 3
 
-		Score:setupTimer(game_time, nil, 20, options_x_start)
-		draw = countdown_draw
-		update = countdown_update
+		draw = menu_time_draw
+		update = menu_time_update
 		
 		player_count = 3
 	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
@@ -94,9 +92,8 @@ function menu_start(option) -- TODO refactor branching statements for different 
 
 		count_down = 3
 
-		Score:setupTimer(game_time, nil, 20, options_x_start)
-		draw = countdown_draw
-		update = countdown_update
+		draw = menu_time_draw
+		update = menu_time_update
 
 		player_count = 4
 	elseif 4 == option then
@@ -125,7 +122,26 @@ function menu_draw()
 	
 	if 3 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
 	love.graphics.printf( "exit", loc_x, options_y_start + 200, 200, "center" )
+end
 
+function menu_time_draw()
+	love.graphics.printf( "Select time (in seconds): " .. game_time, loc_x, options_y_start, 200, "center" )
+end
+
+function menu_time_update()
+	if love.keyboard.isDown("return") and next_menu_change < love.timer.getTime() then
+		draw = countdown_draw
+		update = countdown_update
+		Score:setupTimer(game_time, nil, 20, options_x_start)
+	end
+	if love.keyboard.isDown("up") and next_menu_change < love.timer.getTime() then
+		next_menu_change = love.timer.getTime() + 0.05
+		game_time = math.min(game_time + 1, 99999)
+
+	elseif love.keyboard.isDown("down") and next_menu_change < love.timer.getTime() then
+		next_menu_change = love.timer.getTime() + 0.05
+		game_time = math.max(game_time - 1, 1)
+	end	
 end
 
 function game_draw()
@@ -153,9 +169,7 @@ function game_update(delta_time)
 	if entities.player4 ~= nil then entities.player4:update(4, delta_time, world) end
 	handle_collisions( chaser )
 	if swap_time < love.timer.getTime() then
-		print("Swapping. Chaser is " .. chaser)
 		swap_chaser(entities)
-		print("Swapoed. Chaser is " .. chaser)
 		swap_time = love.timer.getTime() + math.random(5) + 3
 	end
 	if Score:getCurrentGameTime() < 0 then
