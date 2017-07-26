@@ -15,7 +15,7 @@ WASD
 # TODO:
 
 1. Obstacles
-2. World boundary
+2. World boundary (DONE)
 3. Fix bump addition to repo
-4. End time
+4. End time (DONE)
 5. End time selection from menu
