@@ -20,7 +20,7 @@ function menu_start(option) -- TODO refactor branching statements for different 
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
-		chaser = math.floor(math.random(2))
+		chaser = love.math.random( 2 )
 		entities = {
 			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser),
 			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser),
@@ -41,7 +41,7 @@ function menu_start(option) -- TODO refactor branching statements for different 
 		update = countdown_update
 		player_count = 2
 	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
-		chaser = math.floor(math.random(3))
+		chaser = love.math.random( 3 )
 		entities = {
 			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser),
 			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser),
@@ -69,7 +69,7 @@ function menu_start(option) -- TODO refactor branching statements for different 
 		
 		player_count = 3
 	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
-		chaser = math.floor(math.random(4))
+		chaser = love.math.random( 4 )
 
 		entities = {
 			player1 = Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser), 
