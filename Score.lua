@@ -91,7 +91,7 @@ end
 function Score:drawTimer()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), 1920 / 20 - 30, 30, --self.timer.position.x, self.timer.position.y, -- TODO, fix placemet
+	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), gameboard.width / 2 - 100, 30, --self.timer.position.x, self.timer.position.y, -- TODO, fix placemet
 		self.timer.overflow_limit, self.timer.text_align)
 	love.graphics.setFont(old_font)
 end
@@ -147,6 +147,7 @@ function Score:drawScore()
 	self:drawScoreCountPlayer1()
 	love.graphics.setColor(0, 255, 0)
 	self:drawScoreCountPlayer2()
+	love.graphics.setColor(255, 255, 255)
 	self:drawTimer()
 	love.graphics.setFont(old_font)
 end
