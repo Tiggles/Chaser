@@ -49,6 +49,7 @@ function menu_start(option)
 end
 
 function menu_draw()
+	love.graphics.setBackgroundColor(125, 125, 150)
 	if 0 == menu_index then	
 		love.graphics.setColor(0, 200, 255);
 		loc_x = options_x_start + math.cos(options_x) * 5
@@ -63,6 +64,7 @@ function menu_draw()
 end
 
 function game_draw()
+	love.graphics.setBackgroundColor(125, 100, 150)
 	love.graphics.setColor(255, 0, 0)
 	entities.player1:draw()
 	love.graphics.setColor(0, 255, 0)
@@ -117,6 +119,7 @@ function countdown_draw()
 end
 
 function score_draw( )
+	love.graphics.setBackgroundColor(150,150,150)
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
@@ -138,7 +141,7 @@ function score_draw( )
 	end
 end
 
-function score_update(  )
+function score_update()
 	if time == nil then
 		time = love.timer.getTime() + 0.5
 	end
