@@ -23,8 +23,8 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
 		chaser = love.math.random( 2 )
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser), Color:color(255, 0, 0))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser), Color:color(0, 255, 0))
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser, Color:color(255, 0, 0)))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0)))
 		entities.map = init_random_map()
 					
 		for i = 1, #entities.map.boundaries do
@@ -35,6 +35,8 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 			local player = entities.players[i]
 			world:add(player, player.x, player.y, 20, 20)
 		end
+
+		print("player count: " .. #entities.players)
 		count_down = 3
 
 		draw = menu_time_draw
@@ -144,28 +146,15 @@ end
 function game_draw()
 	love.graphics.setBackgroundColor(125, 100, 150)
 	for i = 1, #entities.players do
-		local player = entities.players[i]
-		player:draw()
+		entities.players[i]:draw()
 	end
-	--entities.player1:draw()
-	--love.graphics.setColor(0, 255, 0)
-	--entities.player2:draw()
-	--if entities.player3 ~= nil then
-	--	love.graphics.setColor(0, 0, 255)
-	--	entities.player3:draw()
-	--end
-	--if entities.player4 ~= nil then
-	--	love.graphics.setColor(255, 255, 0)
-	--	entities.player4:draw()
-	--end
 	Score:drawScore()
 end
 
 function game_update(delta_time)
-	entities.player1:update(1, delta_time, world)
-	entities.player2:update(2, delta_time, world)
-	if entities.player3 ~= nil then entities.player3:update(3, delta_time, world) end
-	if entities.player4 ~= nil then entities.player4:update(4, delta_time, world) end
+	for i = 1, #entities.players do
+		entities.players[i]:update(delta_time, world)
+	end
 	handle_collisions( chaser )
 	if swap_time < love.timer.getTime() then
 		swap_chaser(entities)
@@ -197,14 +186,13 @@ function score_draw( )
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
-	if entities.player1 ~= nil then
-		love.graphics.setColor(255, 0, 0)
-		love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
-	end
-	if entities.player2 ~= nil then
-		love.graphics.setColor(0, 255, 0)
-		love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
-	end
+	
+	love.graphics.setColor(255, 0, 0)
+	love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
+	
+	love.graphics.setColor(0, 255, 0)
+	love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
+	
 	if entities.player3 ~= nil then
 		love.graphics.setColor(0, 0, 255)
 		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )

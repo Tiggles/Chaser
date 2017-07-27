@@ -46,10 +46,9 @@ function swap_chaser(entities)
 end
 
 function add_point()
-    entities.player1:add_point()
-    entities.player2:add_point()
-    entities.player3:add_point()
-    entities.player4:add_point()
+    for i = 1, #entities.players do
+        entities.players[i]:add_point()
+    end
 end
 
 function check_exit()
@@ -76,11 +75,11 @@ function set_position_by_player_count( player_count ) -- TODO better random
             y2 = gameboard.height * (2 / 3); x2 = gameboard.width * (1/2);
         end
         if 1 == math.random(2) then
-            entities.player1.x = x1; entities.player1.y = y1;
-            entities.player2.x = x2; entities.player2.y = y2;
+            entities.players[1].x = x1; entities.players[1].y = y1;
+            entities.players[2].x = x2; entities.players[2].y = y2;
         else
-            entities.player2.x = x1; entities.player2.y = y1;
-            entities.player1.x = x2; entities.player1.y = y2;
+            entities.players[2].x = x1; entities.players[2].y = y1;
+            entities.players[1].x = x2; entities.players[1].y = y2;
         end
     elseif 3 == player_count then
         if 1 == math.random(2) then
@@ -94,17 +93,17 @@ function set_position_by_player_count( player_count ) -- TODO better random
         end
         local rnd = math.random(3)
         if 1 == rnd then
-            entities.player1.x = x1; entities.player1.y = y1;
-            entities.player2.x = x2; entities.player2.y = y2;
-            entities.player3.x = x3; entities.player3.y = y3;
+            entities.players[1].x = x1; entities.players[1].y = y1;
+            entities.players[2].x = x2; entities.players[2].y = y2;
+            entities.players[3].x = x3; entities.players[3].y = y3;
         elseif 2 == rnd then
-            entities.player2.x = x1; entities.player2.y = y1;
-            entities.player3.x = x2; entities.player3.y = y2;
-            entities.player1.x = x3; entities.player1.y = y3;
+            entities.players[2].x = x1; entities.players[2].y = y1;
+            entities.players[3].x = x2; entities.players[3].y = y2;
+            entities.players[1].x = x3; entities.players[1].y = y3;
         else
-            entities.player3.x = x1; entities.player3.y = y1;
-            entities.player1.x = x2; entities.player1.y = y2;
-            entities.player2.x = x3; entities.player2.y = y3;
+            entities.players[3].x = x1; entities.players[3].y = y1;
+            entities.players[1].x = x2; entities.players[1].y = y2;
+            entities.players[2].x = x3; entities.players[2].y = y3;
         end
     else  -- 4 players
         if 1 == math.random(2) then
@@ -120,35 +119,35 @@ function set_position_by_player_count( player_count ) -- TODO better random
         end
         local rnd = math.random(4)
         if 1 == rnd then
-            entities.player1.x = x1; entities.player1.y = y1;
-            entities.player2.x = x2; entities.player2.y = y2;
-            entities.player3.x = x3; entities.player3.y = y3;
-            entities.player4.x = x4; entities.player4.y = y4;        
+            entities.players[1].x = x1; entities.players[1].y = y1;
+            entities.players[2].x = x2; entities.players[2].y = y2;
+            entities.players[3].x = x3; entities.players[3].y = y3;
+            entities.players[4].x = x4; entities.players[4].y = y4;        
         elseif 2 == rnd then
-            entities.player2.x = x1; entities.player2.y = y1;
-            entities.player3.x = x2; entities.player3.y = y2;
-            entities.player4.x = x3; entities.player4.y = y3;
-            entities.player1.x = x4; entities.player1.y = y4;
+            entities.players[2].x = x1; entities.players[2].y = y1;
+            entities.players[3].x = x2; entities.players[3].y = y2;
+            entities.players[4].x = x3; entities.players[4].y = y3;
+            entities.players[1].x = x4; entities.players[1].y = y4;
         elseif 3 == rnd then
-            entities.player3.x = x1; entities.player3.y = y1;
-            entities.player4.x = x2; entities.player4.y = y2;
-            entities.player1.x = x3; entities.player1.y = y3;
-            entities.player2.x = x4; entities.player2.y = y4;
+            entities.players[3].x = x1; entities.players[3].y = y1;
+            entities.players[4].x = x2; entities.players[4].y = y2;
+            entities.players[1].x = x3; entities.players[1].y = y3;
+            entities.players[2].x = x4; entities.players[2].y = y4;
         elseif 4 == rnd then
-            entities.player4.x = x1; entities.player4.y = y1;
-            entities.player1.x = x2; entities.player1.y = y2;
-            entities.player2.x = x3; entities.player2.y = y3;
-            entities.player3.x = x4; entities.player3.y = y4;
+            entities.players[4].x = x1; entities.players[4].y = y1;
+            entities.players[1].x = x2; entities.players[1].y = y2;
+            entities.players[2].x = x3; entities.players[2].y = y3;
+            entities.players[3].x = x4; entities.players[3].y = y4;
         end
     end
 end
 
-function handle_collisions( player )
-    local player, others = get_players_to_compare( player )
+function handle_collisions( player_number )
+    local player, others = get_players_to_compare( player_number )
     for i = 1, #others do
         if check_collision(player, others[i]) then
             catch_sound:play()
-            add_point(entities)
+            add_point( player.player_number )
             reset_position(entities)
             count_down = 3
             swap_time = swap_time + 3
@@ -159,11 +158,11 @@ function handle_collisions( player )
     end
 end
 
-function get_players_to_compare( player )
+function get_players_to_compare( player_number )
     local players = {}
-    local player = entities.players[player]
+    local player = entities.players[player_number]
     for i = 1, #entities.players do
-        if entities.players[i].player_number ~= player then
+        if entities.players[i].player_number ~= player_number then
             table.insert(players, entities.players[i])
         end
     end

@@ -164,9 +164,13 @@ end
 
 function Score:drawPlayerScore()
 	self:drawScoreCountPlayer1()
-	self:drawScoreCountPlayer3()
-	self:drawScoreCountPlayer3()
-	self:drawScoreCountPlayer4()
+	self:drawScoreCountPlayer2()
+	if player_count > 2 then
+		self:drawScoreCountPlayer3()
+	end
+	if player_count > 3 then
+		self:drawScoreCountPlayer4()
+	end
 end
 
 function Score:drawScore()

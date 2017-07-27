@@ -70,7 +70,7 @@ function Player:new(x, y, player_number, is_chaser, RGB)
 	return setmetatable(player, self)
 end
 
-function Player:update(player_number, delta_time, world) -- Redo with function pointers instead?
+function Player:update(delta_time, world) -- Redo with function pointers instead?
 	if 1 == self.player_number then
 		handleWASD(delta_time, self, world)
 	elseif 2 == self.player_number then
@@ -109,6 +109,7 @@ function Player:add_point()
 end
 
 function Player:draw(camera)
+	love.graphics.setColor(self.RGB.r, self.RGB.g, self.RGB.b)
 	if self.player_number == chaser then
 		drawmode = "fill"
 	else
