@@ -39,15 +39,17 @@ end
 
 function swap_chaser(entities)
     chaser = chaser % player_count + 1
-    entities.player1:swap_chaser()
-    entities.player2:swap_chaser()
-    if entities.player3 ~= nil then entities.player3:swap_chaser() end
-    if entities.player4 ~= nil then entities.player4:swap_chaser() end
+    for i = 1, #entities.players do
+        local player = entities.players[i];
+        player:swap_chaser()
+    end
 end
 
 function add_point()
-    entities.player1:add_point(1)
-    entities.player2:add_point(2)
+    entities.player1:add_point()
+    entities.player2:add_point()
+    entities.player3:add_point()
+    entities.player4:add_point()
 end
 
 function check_exit()
@@ -56,10 +58,12 @@ end
 
 function reset_position(entities)
     set_position_by_player_count( player_count )
-    world:update(entities.player1, entities.player1.x, entities.player1.y); entities.player1.velocity:resetSpeed();
-    world:update(entities.player2, entities.player2.x, entities.player2.y); entities.player2.velocity:resetSpeed();
-    if entities.player3 ~= nil then world:update(entities.player3, entities.player3.x, entities.player3.y); entities.player3.velocity:resetSpeed(); end
-    if entities.player4 ~= nil then world:update(entities.player4, entities.player4.x, entities.player4.y); entities.player4.velocity:resetSpeed(); end
+    for i = 1, #entities.players do
+        local player = entities.players[i];
+        world:update(player, player.x, player.y); player.velocity:resetSpeed();
+    end
+
+
 end
 
 function set_position_by_player_count( player_count ) -- TODO better random
@@ -157,10 +161,11 @@ end
 
 function get_players_to_compare( player )
     local players = {}
-    table.insert(players, entities.player1)
-    table.insert(players, entities.player2)
-    table.insert(players, entities.player3)
-    table.insert(players, entities.player4)
-    player = table.remove(players, player)
+    local player = entities.players[player]
+    for i = 1, #entities.players do
+        if entities.players[i].player_number ~= player then
+            table.insert(players, entities.players[i])
+        end
+    end
     return player, players
 end

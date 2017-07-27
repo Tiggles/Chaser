@@ -17,23 +17,24 @@ function menu_update( delta_time )
 end
 
 function menu_start( option ) -- TODO refactor branching statements for different player counts
+	entities = {}
+	entities.players = {}
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
 		chaser = love.math.random( 2 )
-		entities = {
-			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser),
-			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
-				
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser), Color:color(255, 0, 0))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser), Color:color(0, 255, 0))
+		entities.map = init_random_map()
+					
 		for i = 1, #entities.map.boundaries do
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
+		for i = 1, #entities.players do
+			local player = entities.players[i]
+			world:add(player, player.x, player.y, 20, 20)
+		end
 		count_down = 3
 
 		draw = menu_time_draw
@@ -41,13 +42,10 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 		player_count = 2
 	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
 		chaser = love.math.random( 3 )
-		entities = {
-			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser),
-			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser),
-			player3 = Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser))
+		entities.map = init_random_map()
 		
 		swap_time = love.timer.getTime() + math.random(5) + 3
 		world = bump.newWorld(64)
@@ -56,10 +54,11 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
-		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
-
+		for i = 1, #entities.players do
+			local player = entities.players[i]
+			world:add(player, player.x, player.y, 20, 20)
+		end
+		
 		count_down = 3
 
 		draw = menu_time_draw
@@ -69,14 +68,12 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
 		chaser = love.math.random( 4 )
 
-		entities = {
-			player1 = Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser), 
-			player2 = Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser),
-			player3 = Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser),
-			player4 = Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser))
+		entities.map = init_random_map()
+
 
 		swap_time = love.timer.getTime() + math.random(5) + 3
 		world = bump.newWorld(64)
@@ -85,10 +82,10 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
-		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
-		world:add(entities.player4, entities.player4.x, entities.player4.y, 20, 20)
+		for i = 1, #entities.players do
+			local player = entities.players[i]
+			world:add(player, player.x, player.y, 20, 20)
+		end
 
 		count_down = 3
 
@@ -146,19 +143,21 @@ end
 
 function game_draw()
 	love.graphics.setBackgroundColor(125, 100, 150)
-	love.graphics.setColor(255, 0, 0)
-	entities.player1:draw()
-	love.graphics.setColor(0, 255, 0)
-	entities.player2:draw()
-	if entities.player3 ~= nil then
-		love.graphics.setColor(0, 0, 255)
-		entities.player3:draw()
+	for i = 1, #entities.players do
+		local player = entities.players[i]
+		player:draw()
 	end
-	if entities.player4 ~= nil then
-		love.graphics.setColor(255, 255, 0)
-		entities.player4:draw()
-	end
-	love.graphics.setColor(255, 255, 255)
+	--entities.player1:draw()
+	--love.graphics.setColor(0, 255, 0)
+	--entities.player2:draw()
+	--if entities.player3 ~= nil then
+	--	love.graphics.setColor(0, 0, 255)
+	--	entities.player3:draw()
+	--end
+	--if entities.player4 ~= nil then
+	--	love.graphics.setColor(255, 255, 0)
+	--	entities.player4:draw()
+	--end
 	Score:drawScore()
 end
 

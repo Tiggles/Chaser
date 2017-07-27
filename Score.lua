@@ -27,8 +27,7 @@ Score = {
 
 local function poll_score(score_table)
 	if #score_table.score_count.score_points_queue > 0 then
-		local stuff = score_table.score_count.score_points_queue[1]
-		table.remove(score_table.score_count.score_points_queue, 1)
+		local stuff = table.remove(score_table.score_count.score_points_queue, 1)
 		return stuff
 	else
 		return  nil
@@ -163,21 +162,18 @@ function Score:drawScoreCountPlayer4()
 	love.graphics.setFont(old_font)
 end
 
-function Score:drawPlayers()
+function Score:drawPlayerScore()
 	self:drawScoreCountPlayer1()
-	self:drawScoreCountPlayer2()
-	if entities.player3 ~= nil then
-		self:drawScoreCountPlayer3()
-	end
-	if entities.player4 ~= nil then
-		self:drawScoreCountPlayer4()
-	end
+	self:drawScoreCountPlayer3()
+	self:drawScoreCountPlayer3()
+	self:drawScoreCountPlayer4()
 end
 
 function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
-	self:drawPlayers()
+	self:drawPlayerScore()
+	love.graphics.setColor(255, 255, 255)
 	self:drawTimer()
 	love.graphics.setFont(old_font)
 end

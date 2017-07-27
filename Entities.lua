@@ -1,3 +1,15 @@
+Color = {}
+
+function Color:color(r, g, b)
+	color = {
+		r = r,
+		g = g,
+		b = b
+	}
+	self.__index = self
+	return setmetatable(color, self)
+end
+
 
 Velocity = {}
 	
@@ -41,12 +53,13 @@ end
 
 Player = {}
 
-function Player:new(x, y, player_number, is_chaser)
+function Player:new(x, y, player_number, is_chaser, RGB)
 	player = {
 		x = x,
 		y = y,
 		name = "player" .. tostring(player_number),
-		player_number = player_number
+		player_number = player_number,
+		RGB = RGB
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -81,12 +94,16 @@ function Player:swap_chaser()
 	end
 end
 
-function Player:add_point(player_number)
+function Player:add_point()
 	if self.player_number == chaser then
-		if 1 == player_number then
+		if self.player_number == 1 then
 			Score.score_count.player1score = Score.score_count.player1score + 1
-		elseif 2 == player_number then
+		elseif self.player_number == 2 then
 			Score.score_count.player2score = Score.score_count.player2score + 1
+		elseif self.player_number == 2 then
+			Score.score_count.player3score = Score.score_count.player3score + 1
+		elseif self.player_number == 2 then
+			Score.score_count.player4score = Score.score_count.player4score + 1
 		end
 	end
 end
