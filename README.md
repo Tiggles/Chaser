@@ -20,6 +20,16 @@ Left axis on controller
 
 Left axis on controller
 
+# Installation
+
+Clone the repository
+
+Enter the folder and type
+
+´´´bash
+git submodule init && git submodule update
+´´´
+
 # TODO:
 
 1. Obstacles
