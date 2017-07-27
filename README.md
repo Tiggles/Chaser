@@ -22,13 +22,18 @@ Left axis on controller
 
 # Installation
 
-Clone the repository
+Clone the repository, e.g.:
 
-Enter the folder and type
+```bash
+git clone https://github.com/Tiggles/Chaser
+```
 
-´´´bash
+Enter the folder and type:
+
+```bash
 git submodule init && git submodule update
-´´´
+```
+Provide the folder named __Chaser__ as the first argument when running the _love_ executable.
 
 # TODO:
 
