@@ -23,30 +23,23 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
 		chaser = love.math.random( 2 )
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser, Color:color(255, 0, 0)))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0)))
 		entities.map = init_random_map()
 					
 		for i = 1, #entities.map.boundaries do
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		for i = 1, #entities.players do
-			local player = entities.players[i]
-			world:add(player, player.x, player.y, 20, 20)
-		end
-
-		print("player count: " .. #entities.players)
 		count_down = 3
 
-		draw = menu_time_draw
-		update = menu_time_update
+		draw = menu_controls_draw
+		update = menu_controls_update
+
 		player_count = 2
 	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
 		chaser = love.math.random( 3 )
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser))
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser, Color:color(255, 0, 0)))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser, Color:color(0, 255, 0)))
+		table.insert(entities.players, Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser, Color:color(0, 0, 255)))
 		entities.map = init_random_map()
 		
 		swap_time = love.timer.getTime() + math.random(5) + 3
@@ -63,17 +56,17 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 		
 		count_down = 3
 
-		draw = menu_time_draw
-		update = menu_time_update
+		draw = menu_controls_draw
+		update = menu_controls_update
 		
 		player_count = 3
 	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
 		chaser = love.math.random( 4 )
 
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser))
-		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser))
-		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0)))
+		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser, Color:color(0, 255, 0)))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser, Color:color(0, 0, 255)))
+		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser, Color:color(0, 255, 255)))
 		entities.map = init_random_map()
 
 
@@ -84,19 +77,55 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		for i = 1, #entities.players do
-			local player = entities.players[i]
-			world:add(player, player.x, player.y, 20, 20)
-		end
+		draw = menu_controls_draw
+		update = menu_controls_update
 
 		count_down = 3
-
-		draw = menu_time_draw
-		update = menu_time_update
 
 		player_count = 4
 	elseif 4 == option then
 		love.event.quit()
+	end
+end
+
+function menu_controls_draw()
+	love.graphics.line(gameboard.width / 2, 0, gameboard.width/ 2, gameboard.height)
+	love.graphics.line(0, gameboard.height / 2, gameboard.width, gameboard.height / 2)
+
+	-- Draw upper left
+
+	-- Draw upper right
+
+	-- Draw lower left
+
+	-- Draw lower right
+
+end
+
+function menu_controls_update()
+	if menu_delay == nil then
+		menu_delay = love.timer.getTime()
+	end
+	
+	if not player_already_added(handleWASD) and love.keyboard.isDown("w", "a", "s", "d") then
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0), handleWASD))
+		print("inserted WASD")
+	else 
+		print("already inserted")
+	end
+
+	if not player_already_added(handleULRD) and love.keyboard.isDown("u", "l", "r", "d") then
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleULRD))
+	else
+	end	
+
+	if love.keyboard.isDown("return") and #entities.players > 1 and love.timer.getTime() > menu_delay + 0.2 then
+		for i = 1, #entities.players do
+			local player = entities.players[i]
+			world:add(player, player.x, player.y, 20, 20)
+		end
+		draw = menu_time_draw
+		update = menu_time_update
 	end
 end
 
@@ -136,7 +165,6 @@ function menu_time_update()
 	if love.keyboard.isDown("up") and next_menu_change < love.timer.getTime() then
 		next_menu_change = love.timer.getTime() + 0.05
 		game_time = math.min(game_time + 1, 99999)
-
 	elseif love.keyboard.isDown("down") and next_menu_change < love.timer.getTime() then
 		next_menu_change = love.timer.getTime() + 0.05
 		game_time = math.max(game_time - 1, 1)

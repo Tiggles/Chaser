@@ -19,6 +19,13 @@ function check_collision(self, other)
     end
 end
 
+function player_already_added( control_scheme )
+    for i = 1, #entities.players do
+        if entities.players[i].control_scheme == control_scheme then return true end
+    end
+    return false
+end
+
 function init_random_map()
     boundaries = {}
     --Left
@@ -146,7 +153,7 @@ function handle_collisions( player_number )
     local player, others = get_players_to_compare( player_number )
     for i = 1, #others do
         if check_collision(player, others[i]) then
-            catch_sound:play()
+            --catch_sound:play()
             add_point( player.player_number )
             reset_position(entities)
             count_down = 3
