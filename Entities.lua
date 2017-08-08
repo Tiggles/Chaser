@@ -114,11 +114,10 @@ end
 function Player:draw(camera)
 	love.graphics.setColor(self.RGB.r, self.RGB.g, self.RGB.b)
 	if self.player_number == chaser then
-		drawmode = "fill"
+		love.graphics.draw( skull_image, self.x, self.y)
 	else
-		drawmode = "line"
+		love.graphics.rectangle("line", self.x, self.y, 32, 32)
 	end
-	love.graphics.rectangle(drawmode, self.x, self.y, 20, 20)
 end
 
 function handleULRD(delta_time, player, world)

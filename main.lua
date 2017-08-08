@@ -13,6 +13,7 @@ end
 
 function love.load(args)
 	catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg")
+	skull_image = love.graphics.newImage( "Assets/Images/placeholderskull.png" )
 	game_time = 120
 	in_focus = false
 	update = menu_update
