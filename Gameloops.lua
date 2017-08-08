@@ -33,57 +33,8 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 
 		draw = menu_controls_draw
 		update = menu_controls_update
-
-		player_count = 2
-	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
-		chaser = love.math.random( 3 )
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser, Color:color(255, 0, 0)))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser, Color:color(0, 255, 0)))
-		table.insert(entities.players, Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser, Color:color(0, 0, 255)))
-		entities.map = init_random_map()
-		
-		swap_time = love.timer.getTime() + math.random(5) + 3
-		world = bump.newWorld(64)
-		
-		for i = 1, #entities.map.boundaries do
-			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
-		end
-
-		for i = 1, #entities.players do
-			local player = entities.players[i]
-			world:add(player, player.x, player.y, 20, 20)
-		end
-		
-		count_down = 3
-
-		draw = menu_controls_draw
-		update = menu_controls_update
-		
-		player_count = 3
-	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
-		chaser = love.math.random( 4 )
-
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0)))
-		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser, Color:color(0, 255, 0)))
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser, Color:color(0, 0, 255)))
-		table.insert(entities.players, Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser, Color:color(0, 255, 255)))
-		entities.map = init_random_map()
-
-
-		swap_time = love.timer.getTime() + math.random(5) + 3
-		world = bump.newWorld(64)
-		
-		for i = 1, #entities.map.boundaries do
-			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
-		end
-
-		draw = menu_controls_draw
-		update = menu_controls_update
-
-		count_down = 3
-
-		player_count = 4
-	elseif 4 == option then
+		player_count = 0
+	elseif 2 == option then
 		love.event.quit()
 	end
 end
@@ -91,9 +42,9 @@ end
 function menu_controls_draw()
 	love.graphics.line(gameboard.width / 2, 0, gameboard.width/ 2, gameboard.height)
 	love.graphics.line(0, gameboard.height / 2, gameboard.width, gameboard.height / 2)
-
+	--local control_strings = generate_player_strings(entities.players)
 	-- Draw upper left
-
+	--love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
 	-- Draw upper right
 
 	-- Draw lower left
@@ -108,16 +59,33 @@ function menu_controls_update()
 	end
 	
 	if not player_already_added(handleWASD) and love.keyboard.isDown("w", "a", "s", "d") then
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0), handleWASD))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0), handleWASD, false, 0))
 		print("inserted WASD")
+		player_count = player_count + 1
 	else 
 		print("already inserted")
 	end
 
 	if not player_already_added(handleULRD) and love.keyboard.isDown("u", "l", "r", "d") then
-		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleULRD))
+		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleULRD, false, 0))
+		print("inserted WASD")
+		player_count = player_count + 1
 	else
+		print("already inserted")
 	end	
+
+	local current_joysticks = love.joystick.getJoysticks()
+
+	if #current_joysticks > 0 then
+		if love.gamepadpressed( current_joysticks[1], "a" ) then
+			table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleJoystick, false, 1))
+		end
+		if #current_joysticks > 1 then
+			if love.gamepadpressed( current_joysticks[2], "a" ) then
+				table.insert(entities.players, Player:new(gameboard.width * (3 / 8), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleJoystick, false, 2))
+			end
+		end
+	end
 
 	if love.keyboard.isDown("return") and #entities.players > 1 and love.timer.getTime() > menu_delay + 0.2 then
 		for i = 1, #entities.players do
@@ -138,18 +106,9 @@ function menu_draw()
 		love.graphics.setColor(255, 255, 255); 
 		loc_x = options_x_start 
 	end
-	love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
-	
+	love.graphics.printf( "Play", loc_x, options_y_start + 50, 200, "center" )
 	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	if 0 == #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
-	love.graphics.printf( "3-player (requires one controller)", loc_x, options_y_start + 100, 200, "center" )
-	
-	if 2 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	if 2 > #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
-	love.graphics.printf( "4-player (requires two controllers)", loc_x, options_y_start + 150, 200, "center" )
-	
-	if 3 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	love.graphics.printf( "exit", loc_x, options_y_start + 200, 200, "center" )
+	love.graphics.printf( "Quit", loc_x, options_y_start + 100, 200, "center" )
 end
 
 function menu_time_draw()

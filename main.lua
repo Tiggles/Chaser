@@ -18,7 +18,7 @@ function love.load(args)
 	update = menu_update
 	draw = menu_draw
 	menu_index = 0
-	menu_options = 4
+	menu_options = 2
 	next_menu_change = love.timer.getTime()
 	gameboard =  {
 		width = 1280,

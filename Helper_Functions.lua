@@ -68,8 +68,6 @@ function reset_position(entities)
         local player = entities.players[i];
         world:update(player, player.x, player.y); player.velocity:resetSpeed();
     end
-
-
 end
 
 function set_position_by_player_count( player_count ) -- TODO better random

@@ -61,14 +61,16 @@ end
 
 Player = {}
 
-function Player:new(x, y, player_number, is_chaser, RGB, control_scheme)
+function Player:new(x, y, player_number, is_chaser, RGB, control_scheme, use_controller, controller_index)
 	player = {
 		x = x,
 		y = y,
 		name = "player" .. tostring(player_number),
 		player_number = player_number,
 		RGB = RGB,
-		control_scheme = control_scheme
+		control_scheme = control_scheme,
+		use_controller = use_controller,
+		controller_index = controller_index
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -80,7 +82,11 @@ function Player:new(x, y, player_number, is_chaser, RGB, control_scheme)
 end
 
 function Player:update(delta_time, world)
-	self.control_scheme(delta_time, self, world)
+	if not self.use_controller then
+		self.control_scheme(delta_time, self, world)
+	else
+		self.control_scheme( self.controller_index, delta_time )
+	end
 end
 
 function Player:swap_chaser()
@@ -142,10 +148,6 @@ function handleULRD(delta_time, player, world)
 	player.velocity:setSpeedY()
 
 	local actualX, actualY, cols, len = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
-
-	for i = 1, #cols do
-		print(cols[i])
-	end
 
 	player.x = actualX
 	player.y = actualY
