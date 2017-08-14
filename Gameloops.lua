@@ -62,8 +62,6 @@ function menu_controls_update()
 		table.insert(entities.players, Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser, Color:color(255, 0, 0), handleWASD, false, 0))
 		print("inserted WASD")
 		player_count = player_count + 1
-	else 
-		print("already inserted")
 	end
 
 	if not player_already_added(handleULRD) and love.keyboard.isDown("u", "l", "r", "d") then
