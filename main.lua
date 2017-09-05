@@ -31,6 +31,7 @@ function love.load(args)
 	horisontal_draw_scale = 1
 	vertical_draw_scale = 1
 	love.window.setMode( gameboard.width, gameboard.height, { resizable = true, fullscreen = false } )
+	player_count = 0
 end
 
 function love.update(delta_time)

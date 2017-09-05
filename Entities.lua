@@ -184,10 +184,12 @@ function handleWASD(delta_time, player, world)
 	player.y = actualY
 end
 
+
+-- TODO: REDO
 function handle_joystick_left( joystick_number, delta_time )
 	local current_joystick = love.joystick.getJoysticks()[joystick_number]
-	if 1 == joystick_number then player = entities.player3 else player = entities.player4 end
-	-- actual movement
+	local player = entities.players[joystick_number]
+
 	local left_right_axis = current_joystick:getAxis(1)
 	local up_down_axis = current_joystick:getAxis(2)
 
