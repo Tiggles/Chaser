@@ -72,7 +72,7 @@ function menu_controls_update()
 				player_count = player_count + 1
 				local c = player_colors[player_count]
 				local loc = player_locations[player_count]
-				table.insert(entities.players, Player:new(loc_x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 1))
+				table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 1))
 				print("inserted Left joystick 1")
 			end
 			if not player_already_added_controller(handle_joystick_right, 1) and current_joysticks[1]:isDown( 6 ) then -- RB
@@ -197,11 +197,11 @@ function score_draw( )
 	love.graphics.setColor(0, 255, 0)
 	love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
 	
-	if entities.player3 ~= nil then
+	if entities.players[3] ~= nil then
 		love.graphics.setColor(0, 0, 255)
 		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )
 	end
-	if entities.player4 ~= nil then
+	if entities.players[4] ~= nil then
 		love.graphics.setColor(255, 255, 0)
 		love.graphics.printf( "Player 4: " .. Score.score_count.player4score, options_x_start, options_y_start + 80, 200, "center" )
 	end
