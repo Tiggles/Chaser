@@ -51,7 +51,8 @@ function menu_controls_update()
 		if not player_already_added(handleWASD) and love.keyboard.isDown("w", "a", "s", "d") then
 			player_count = player_count + 1
 			local c = player_colors[player_count]
-			table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 4), player_count, false, Color:color(c.R, c.G, c.B), handleWASD, false, 0))
+			local loc = player_locations[player_count]
+			table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleWASD, false, 0))
 			print("inserted WASD")
 		end
 
@@ -59,7 +60,8 @@ function menu_controls_update()
 		if not player_already_added(handleULRD) and love.keyboard.isDown("up", "left", "right", "down") then
 			player_count = player_count + 1
 			local c = player_colors[player_count]
-			table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (3/4), player_count, false, Color:color(c.R, c.G, c.B), handleULRD, false, 0))
+			local loc = player_locations[player_count]
+			table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleULRD, false, 0))
 			print("inserted ULRD")
 		end	
 
@@ -69,26 +71,30 @@ function menu_controls_update()
 			if not player_already_added_controller(handle_joystick_left, 1) and current_joysticks[1]:isDown( 5 ) then -- LB
 				player_count = player_count + 1
 				local c = player_colors[player_count]
-				table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/4), player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 1))
+				local loc = player_locations[player_count]
+				table.insert(entities.players, Player:new(loc_x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 1))
 				print("inserted Left joystick 1")
 			end
 			if not player_already_added_controller(handle_joystick_right, 1) and current_joysticks[1]:isDown( 6 ) then -- RB
 				player_count = player_count + 1
 				local c = player_colors[player_count]
-				table.insert(entities.players, Player:new(gameboard.width * (1 / 3), gameboard.height * (1/6), player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_right, true, 1))
+				local loc = player_locations[player_count]
+				table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_right, true, 1))
 				print("inserted Right joystick 1")
 			end
 			if #current_joysticks > 1 then
 				if not player_already_added_controller(handle_joystick_left, 2) and current_joysticks[2]:isDown( 5 ) then -- LB
 					player_count = player_count + 1
 					local c = player_colors[player_count]
-					table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/3), player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 2))
+					local loc = player_locations[player_count]
+					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 2))
 					print("inserted Left joystick 2")
 				end
 				if not player_already_added_controller(handle_joystick_right, 2) and current_joysticks[2]:isDown( 6 ) then -- RB
 					player_count = player_count + 1
 					local c = player_colors[player_count]
-					table.insert(entities.players, Player:new(gameboard.width * (6 / 10), gameboard.height * (1/3), player_count, false, Color:color(c.R, c.G, c.B), handleJoystickRight, true, 2))
+					local loc = player_locations[player_count]
+					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleJoystickRight, true, 2))
 					print("inserted Right joystick 2")
 				end
 			end
