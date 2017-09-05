@@ -1,13 +1,13 @@
 function check_collision(self, other)
 	local self_left = self.x
-    local self_right = self.x + 20
+    local self_right = self.x + 32
     local self_top = self.y
-    local self_bottom = self.y + 20
+    local self_bottom = self.y + 32
 
     local other_left = other.x
-    local other_right = other.x + 20
+    local other_right = other.x + 32
     local other_top = other.y
-    local other_bottom = other.y + 20
+    local other_bottom = other.y + 32
 
     if self_right >= other_left and
     self_left <= other_right and
@@ -17,13 +17,6 @@ function check_collision(self, other)
     else
         return false
     end
-end
-
-function player_already_added( control_scheme )
-    for i = 1, #entities.players do
-        if entities.players[i].control_scheme == control_scheme then return true end
-    end
-    return false
 end
 
 function init_random_map()
@@ -151,7 +144,6 @@ function handle_collisions( player_number )
     local player, others = get_players_to_compare( player_number )
     for i = 1, #others do
         if check_collision(player, others[i]) then
-            --catch_sound:play()
             add_point( player.player_number )
             reset_position(entities)
             count_down = 3
@@ -172,4 +164,69 @@ function get_players_to_compare( player_number )
         end
     end
     return player, players
+end
+
+function draw_input_strings()
+    local location_x = gameboard.width / 2 - 50
+    local location_y = gameboard.height / 2 - 100
+    if not player_already_added(handleWASD) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press W, S, A or D to join.", location_x, location_y, 200, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "WASD joined.", location_x, location_y, 200, "left" )
+    end
+    if not player_already_added(handleULRD) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press up, down, left or right to join.", location_x, location_y + 20, 300, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "Up, down, left or right joined.", location_x, location_y + 20, 200, "left" )
+    end
+    if not player_already_added_controller(handle_joystick_left, 1) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press LB on the first controller to join.", location_x, location_y + 40, 300, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "LB on first controller joined.", location_x, location_y + 40, 200, "left" )
+    end
+    if not player_already_added_controller(handle_joystick_right, 1) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press RB on the first controller to join.", location_x, location_y + 60, 300, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "RB on first controller joined.", location_x, location_y + 60, 200, "left" )
+    end
+    if not player_already_added_controller(handle_joystick_left, 2) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press LB on the second controller to join.", location_x, location_y + 80, 300, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "LB on second controller joined.", location_x, location_y + 80, 200, "left" )
+    end 
+    if not player_already_added_controller(handle_joystick_right, 2) then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.printf( "Press RB on the second controller to join.", location_x, location_y + 100, 300, "left" )
+    else
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.printf( "LB on second controller joined.", location_x, location_y + 100, 200, "left" )
+    end 
+end
+
+function player_already_added( control_scheme )
+    for i = 1, #entities.players do
+        if entities.players[i].control_scheme == control_scheme then return true end
+    end
+    return false
+end
+
+function player_already_added_controller( control_scheme, index )
+    for i = 1, #entities.players do
+        if entities.players[i].control_scheme == control_scheme then
+            if entities.players[i].controller_index == index then
+                return true 
+            end
+        end
+    end
+    return false
 end

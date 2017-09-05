@@ -184,7 +184,7 @@ function handleWASD(delta_time, player, world)
 	player.y = actualY
 end
 
-function handle_joystick( joystick_number, delta_time )
+function handle_joystick_left( joystick_number, delta_time )
 	local current_joystick = love.joystick.getJoysticks()[joystick_number]
 	if 1 == joystick_number then player = entities.player3 else player = entities.player4 end
 	-- actual movement
@@ -214,4 +214,8 @@ function handle_joystick( joystick_number, delta_time )
 
 	player.x = actualX
 	player.y = actualY
+end
+
+function handle_joystick_right()
+	-- body
 end

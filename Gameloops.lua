@@ -40,17 +40,7 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 end
 
 function menu_controls_draw()
-	love.graphics.line(gameboard.width / 2, 0, gameboard.width/ 2, gameboard.height)
-	love.graphics.line(0, gameboard.height / 2, gameboard.width, gameboard.height / 2)
-	--local control_strings = generate_player_strings(entities.players)
-	-- Draw upper left
-	--love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
-	-- Draw upper right
-
-	-- Draw lower left
-
-	-- Draw lower right
-
+	draw_input_strings()
 end
 
 function menu_controls_update()
@@ -64,23 +54,36 @@ function menu_controls_update()
 		player_count = player_count + 1
 	end
 
-	if not player_already_added(handleULRD) and love.keyboard.isDown("u", "l", "r", "d") then
+
+	if not player_already_added(handleULRD) and love.keyboard.isDown("up", "left", "right", "down") then
 		table.insert(entities.players, Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleULRD, false, 0))
-		print("inserted WASD")
+		print("inserted ULRD")
 		player_count = player_count + 1
-	else
-		print("already inserted")
 	end	
 
 	local current_joysticks = love.joystick.getJoysticks()
 
 	if #current_joysticks > 0 then
-		if love.gamepadpressed( current_joysticks[1], "a" ) then
-			table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleJoystick, false, 1))
+		if not player_already_added_controller(handle_joystick_left, 1) and current_joysticks[1]:isDown( 5 ) then -- LB
+			table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 0, 255), handle_joystick_left, true, 1))
+			print("inserted Left joystick 1")
+			player_count = player_count + 1
+		end
+		if not player_already_added_controller(handle_joystick_right, 1) and current_joysticks[1]:isDown( 6 ) then -- RB
+			table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 255), handle_joystick_right, true, 1))
+			print("inserted Right joystick 1")
+			player_count = player_count + 1
 		end
 		if #current_joysticks > 1 then
-			if love.gamepadpressed( current_joysticks[2], "a" ) then
-				table.insert(entities.players, Player:new(gameboard.width * (3 / 8), gameboard.height * (1/2), 2, 2 == chaser, Color:color(0, 255, 0), handleJoystick, false, 2))
+			if not player_already_added_controller(handle_joystick_left, 2) and current_joysticks[2]:isDown( 5 ) then -- LB
+				table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(255, 255, 0), handle_joystick_left, true, 2))
+				print("inserted Left joystick 2")
+				player_count = player_count + 1
+			end
+			if not player_already_added_controller(handle_joystick_right, 2) and current_joysticks[2]:isDown( 6 ) then -- RB
+				table.insert(entities.players, Player:new(gameboard.width * (4 / 10), gameboard.height * (1/2), 2, 2 == chaser, Color:color(255, 0, 255), handleJoystickRight, true, 2))
+				print("inserted Right joystick 2")
+				player_count = player_count + 1
 			end
 		end
 	end
@@ -88,7 +91,7 @@ function menu_controls_update()
 	if love.keyboard.isDown("return") and #entities.players > 1 and love.timer.getTime() > menu_delay + 0.2 then
 		for i = 1, #entities.players do
 			local player = entities.players[i]
-			world:add(player, player.x, player.y, 20, 20)
+			world:add(player, player.x, player.y, 32, 32)
 		end
 		draw = menu_time_draw
 		update = menu_time_update
