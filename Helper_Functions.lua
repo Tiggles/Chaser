@@ -46,9 +46,7 @@ function swap_chaser(entities)
 end
 
 function add_point()
-    for i = 1, #entities.players do
-        entities.players[i]:add_point()
-    end
+    entities.players[chaser]:add_point()
 end
 
 function check_exit()
@@ -56,14 +54,14 @@ function check_exit()
 end
 
 function reset_position(entities)
-    set_position_by_player_count( player_count )
+    set_position_by_player_count()
     for i = 1, #entities.players do
         local player = entities.players[i];
         world:update(player, player.x, player.y); player.velocity:resetSpeed();
     end
 end
 
-function set_position_by_player_count( player_count ) -- TODO better random
+function set_position_by_player_count( ) -- TODO better random
     if 2 == player_count then
         if 1 == math.random(2) then
             x1 = gameboard.width * (1 / 3); y1 = gameboard.height * (1/2);
@@ -141,6 +139,7 @@ function set_position_by_player_count( player_count ) -- TODO better random
 end
 
 function handle_collisions( player_number )
+    print(player_number)
     local player, others = get_players_to_compare( player_number )
     for i = 1, #others do
         if check_collision(player, others[i]) then

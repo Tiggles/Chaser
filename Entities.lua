@@ -85,7 +85,7 @@ function Player:update(delta_time, world)
 	if not self.use_controller then
 		self.control_scheme(delta_time, self, world)
 	else
-		self.control_scheme( self.controller_index, delta_time )
+		self.control_scheme( self.controller_index, delta_time, self.player_number, world )
 	end
 end
 
@@ -103,9 +103,9 @@ function Player:add_point()
 			Score.score_count.player1score = Score.score_count.player1score + 1
 		elseif self.player_number == 2 then
 			Score.score_count.player2score = Score.score_count.player2score + 1
-		elseif self.player_number == 2 then
+		elseif self.player_number == 3 then
 			Score.score_count.player3score = Score.score_count.player3score + 1
-		elseif self.player_number == 2 then
+		elseif self.player_number == 4 then
 			Score.score_count.player4score = Score.score_count.player4score + 1
 		end
 	end
@@ -186,9 +186,9 @@ end
 
 
 -- TODO: REDO
-function handle_joystick_left( joystick_number, delta_time )
+function handle_joystick_left( joystick_number, delta_time, player_number, world )
 	local current_joystick = love.joystick.getJoysticks()[joystick_number]
-	local player = entities.players[joystick_number]
+	local player = entities.players[player_number]
 
 	local left_right_axis = current_joystick:getAxis(1)
 	local up_down_axis = current_joystick:getAxis(2)
@@ -218,6 +218,34 @@ function handle_joystick_left( joystick_number, delta_time )
 	player.y = actualY
 end
 
-function handle_joystick_right()
-	-- body
+function handle_joystick_right(joystick_number, delta_time, player_number, world)
+	local current_joystick = love.joystick.getJoysticks()[joystick_number]
+	local player = entities.players[player_number]
+
+	local left_right_axis = current_joystick:getAxis(4)
+	local up_down_axis = current_joystick:getAxis(5)
+
+	if left_right_axis > 0.2 or left_right_axis < -0.2 then
+		player.velocity.speedX = player.velocity.speedX - player.velocity.delta * (left_right_axis * -1) * delta_time	
+	elseif player.velocity.speedX < 0 then 
+		player.velocity.speedX = math.min(player.velocity.speedX + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedX > 0 then
+		player.velocity.speedX = math.max(player.velocity.speedX - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	if up_down_axis > 0.2 or up_down_axis < -0.2 then
+		player.velocity.speedY = player.velocity.speedY - player.velocity.delta * (up_down_axis * -1) * delta_time
+	elseif player.velocity.speedY < 0 then 
+		player.velocity.speedY = math.min(player.velocity.speedY + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedY > 0 then 
+		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	player.velocity:setSpeedX()
+	player.velocity:setSpeedY()
+
+	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
+
+	player.x = actualX
+	player.y = actualY
 end
