@@ -12,6 +12,11 @@ function love.focus(focus)
 end
 
 function love.load(args)
+	player_colors = {}
+	table.insert(player_colors, { R = 255, G = 0, B = 0})
+	table.insert(player_colors, { R = 0, G = 255, B = 0})
+	table.insert(player_colors, { R = 0, G = 0, B = 255})
+	table.insert(player_colors, { R = 255, G = 255, B = 0})
 	catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg")
 	skull_image = love.graphics.newImage( "Assets/Images/placeholderskull.png" )
 	game_time = 120
