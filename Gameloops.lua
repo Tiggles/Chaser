@@ -16,7 +16,7 @@ function menu_update( delta_time )
 	options_x = options_x + delta_time * 3
 end
 
-function menu_start( option ) -- TODO refactor branching statements for different player counts
+function menu_start( option )
 	entities = {}
 	entities.players = {}
 	if 1 == option then
@@ -94,7 +94,7 @@ function menu_controls_update()
 					player_count = player_count + 1
 					local c = player_colors[player_count]
 					local loc = player_locations[player_count]
-					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleJoystickRight, true, 2))
+					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_right, true, 2))
 					print("inserted Right joystick 2")
 				end
 			end

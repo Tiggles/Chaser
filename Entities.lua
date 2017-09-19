@@ -221,7 +221,6 @@ end
 function handle_joystick_right(joystick_number, delta_time, player_number, world)
 	local current_joystick = love.joystick.getJoysticks()[joystick_number]
 	local player = entities.players[player_number]
-
 	local left_right_axis = current_joystick:getAxis(4)
 	local up_down_axis = current_joystick:getAxis(5)
 
