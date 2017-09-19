@@ -45,7 +45,7 @@ function love.load(args)
 end
 
 function love.update(delta_time)
-	check_exit(entities)
+	check_exit()
 	update(delta_time)
 end
 

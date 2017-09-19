@@ -139,7 +139,6 @@ function set_position_by_player_count( ) -- TODO better random
 end
 
 function handle_collisions( player_number )
-    print(player_number)
     local player, others = get_players_to_compare( player_number )
     for i = 1, #others do
         if check_collision(player, others[i]) then
