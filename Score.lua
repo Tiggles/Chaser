@@ -11,10 +11,7 @@ Score = {
 		overflow_limit = 2000
 	},
 	score_count = {
-		player1score = 0,
-		player2score = 0,
-		player3score = 0,
-		player4score = 0,
+		player_score = {},
 		overflow_limit = 2000,
 		text_align = 'left',
 		prefix = 'Score: ',
@@ -55,9 +52,12 @@ function Score:setupTimer(start_time, font, font_size, position)
 	end
 end
 
-function Score:setupScoreCount(start_score, font, font_size, position)
+function Score:setupScoreCount(font, font_size, position)
 	self.score_count.font_size = font_size ~= nil and font_size or 24
-	self.score_count.current_score = start_score ~= nil and start_score or 0
+    print("setting up score count")
+    for i = 1, #entities.players do
+        self.score_count.player_score[i] = 0
+    end
 
 	if self.score_count.font == nil then
 		self.score_count.font = love.graphics.newFont("Assets/PressStart2P.ttf", self.score_count.font_size)
@@ -126,51 +126,22 @@ function Score:updateScoreCount(dt)
 	end
 end
 
-function Score:drawScoreCountPlayer1()
-	love.graphics.setColor(255, 0, 0)
-	local old_font = love.graphics.getFont()
-	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player1score), self.score_count.position.x,
-		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
-	love.graphics.setFont(old_font)
-end
-
-function Score:drawScoreCountPlayer2()
-	love.graphics.setColor(0, 255, 0)
-	local old_font = love.graphics.getFont()
-	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player2score), self.score_count.position.x + 500,
-		self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
-	love.graphics.setFont(old_font)
-end
-
-function Score:drawScoreCountPlayer3()
-	love.graphics.setColor(0, 0, 255)
-	local old_font = love.graphics.getFont()
-	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player3score), self.score_count.position.x,
-		gameboard.height - self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
-	love.graphics.setFont(old_font)
-end
-
-function Score:drawScoreCountPlayer4()
-	love.graphics.setColor(255, 255, 0)
-	local old_font = love.graphics.getFont()
-	love.graphics.setFont(self.timer.font)
-	love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player3score), self.score_count.position.x + 500,
-		gameboard.height - self.score_count.position.y, self.score_count.overflow_limit, self.score_count.text_align)
-	love.graphics.setFont(old_font)
+function Score:drawScoreCounts()
+    local old_font = love.graphics.getFont()
+    love.graphics.setFont(self.timer.font)
+    for i = 1, player_count do
+        local color = player_colors[i]
+        love.graphics.setColor(color.R, color.G, color.B)
+        love.graphics.setFont(self.timer.font)
+        if i % 2 == 1 then x = self.score_count.position.x - 250 else x = self.score_count.position.x + 250 end
+        if i > 2 then y = gameboard.height - self.score_count.position.y else y = self.score_count.position.y end
+        love.graphics.printf(self.score_count.prefix .. string.format("%02d", self.score_count.player_score[i]), x, y, self.score_count.overflow_limit, self.score_count.text_align)
+    end
+    love.graphics.setFont(old_font)
 end
 
 function Score:drawPlayerScore()
-	self:drawScoreCountPlayer1()
-	self:drawScoreCountPlayer2()
-	if player_count > 2 then
-		self:drawScoreCountPlayer3()
-	end
-	if player_count > 3 then
-		self:drawScoreCountPlayer4()
-	end
+	self:drawScoreCounts()
 end
 
 function Score:drawScore()

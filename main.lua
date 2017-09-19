@@ -12,11 +12,11 @@ function love.focus(focus)
 end
 
 function love.load(args)
-	player_colors = {}
 	gameboard =  {
 		width = 1280,
 		height = 720
 	}
+    player_colors = {}
 	table.insert(player_colors, { R = 255, G = 0, B = 0})
 	table.insert(player_colors, { R = 0, G = 255, B = 0})
 	table.insert(player_colors, { R = 0, G = 0, B = 255})

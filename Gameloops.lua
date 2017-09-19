@@ -137,6 +137,7 @@ function menu_time_update()
 		draw = countdown_draw
 		update = countdown_update
 		Score:setupTimer(game_time, nil, 20, options_x_start)
+        Score:setupScoreCount()
 	end
 	if love.keyboard.isDown("up") and next_menu_change < love.timer.getTime() then
 		next_menu_change = love.timer.getTime() + 0.05
