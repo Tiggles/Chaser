@@ -99,15 +99,7 @@ end
 
 function Player:add_point()
 	if self.player_number == chaser then
-		if self.player_number == 1 then
-			Score.score_count.player1score = Score.score_count.player1score + 1
-		elseif self.player_number == 2 then
-			Score.score_count.player2score = Score.score_count.player2score + 1
-		elseif self.player_number == 3 then
-			Score.score_count.player3score = Score.score_count.player3score + 1
-		elseif self.player_number == 4 then
-			Score.score_count.player4score = Score.score_count.player4score + 1
-		end
+		Score.score_count.player_score[self.player_number] = Score.score_count.player_score[self.player_number] + 1
 	end
 end
 

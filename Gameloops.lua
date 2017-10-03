@@ -192,19 +192,11 @@ function score_draw( )
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
 	
-	love.graphics.setColor(255, 0, 0)
-	love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
-	
-	love.graphics.setColor(0, 255, 0)
-	love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
-	
-	if entities.players[3] ~= nil then
-		love.graphics.setColor(0, 0, 255)
-		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )
-	end
-	if entities.players[4] ~= nil then
-		love.graphics.setColor(255, 255, 0)
-		love.graphics.printf( "Player 4: " .. Score.score_count.player4score, options_x_start, options_y_start + 80, 200, "center" )
+	local y_delta = 20
+	for i = 1, player_count do
+		local color = player_colors[i]
+		love.graphics.setColor(color.R, color.G, color.B)
+		love.graphics.printf( "Player " .. i .. ": " .. Score.score_count.player_score[i], options_x_start, options_y_start + 20 * i, 200, "center" )	
 	end
 end
 
@@ -215,6 +207,9 @@ function score_update()
 	if time < love.timer.getTime() then
 		if love.keyboard.isDown("space") then
 			time = nil
+			Score.score_count.player_score = {}
+			entities.players = {}
+			entities.player_count = 0
 			update = menu_update
 			draw = menu_draw
 		end

@@ -13,8 +13,8 @@ end
 
 function love.load(args)
 	gameboard =  {
-		width = 1280,
-		height = 720
+		width = 1920,
+		height = 1080
 	}
     player_colors = {}
 	table.insert(player_colors, { R = 255, G = 0, B = 0})
