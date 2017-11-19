@@ -1,3 +1,24 @@
+function draw_border()
+    draw_row_x(32, 32, gameboard.width - 32, 0, 0)
+    draw_row_x(32, 32, gameboard.width, gameboard.height - 32, 0)
+    draw_row_y(32, 32, gameboard.height - 32, 0, 0)
+end
+
+function draw_corner(x, y, rotation)
+end
+
+function draw_row_x(start_location, delta, end_location, y, rotation)
+    for i = start_location, end_location, delta do
+        love.graphics.draw()
+    end
+end
+
+function draw_row_y(start_location, delta, end_location, x, rotation)
+    for i = start_location, end_location, delta do
+
+    end
+end
+
 function check_collision(self, other)
 	local self_left = self.x - 1
     local self_right = self.x + 33
@@ -22,7 +43,7 @@ end
 function init_random_map()
     boundaries = {}
     --Left
-    table.insert(boundaries, { x = -1, y = 0, width = 1, height = gameboard.height })
+    table.insert(boundaries, { x = 0, y = 0, width = 32, height = gameboard.height })
     --Top
     table.insert(boundaries, { x = 0, y = -1, width = gameboard.width, height = 1 })
     -- Right

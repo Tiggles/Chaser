@@ -28,6 +28,7 @@ function love.load(args)
 	table.insert(player_locations, { x = gameboard.width * (2/3), y = gameboard.height * (1 / 4) })
 	catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg")
 	skull_image = love.graphics.newImage( "Assets/Images/placeholderskull.png" )
+	chaser_logo = love.graphics.newImage("Assets/Images/ChaserLogoColored.png")
 	game_time = 120
 	in_focus = false
 	update = menu_update

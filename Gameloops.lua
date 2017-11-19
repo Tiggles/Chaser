@@ -123,6 +123,7 @@ function menu_draw()
 		love.graphics.setColor(255, 255, 255); 
 		loc_x = options_x_start 
 	end
+	love.graphics.draw(chaser_logo, gameboard.width / 3 + 90, 70, 0, 3)
 	love.graphics.printf( "Play", loc_x, options_y_start + 50, 200, "center" )
 	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
 	love.graphics.printf( "Quit", loc_x, options_y_start + 100, 200, "center" )
@@ -153,6 +154,7 @@ function game_draw()
 	for i = 1, #entities.players do
 		entities.players[i]:draw()
 	end
+	draw_border()
 	Score:drawScore()
 end
 
