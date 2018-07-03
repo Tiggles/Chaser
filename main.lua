@@ -5,7 +5,7 @@ require "Gameloops"
 bump = require 'bump/bump'
 
 LUA_INDEX_OFFSET = 1
-
+sound = false
 
 function love.focus(focus)
 	in_focus = focus
@@ -17,16 +17,16 @@ function love.load(args)
 		height = 1080
 	}
     player_colors = {}
-	table.insert(player_colors, { R = 255, G = 0, B = 0})
-	table.insert(player_colors, { R = 0, G = 255, B = 0})
-	table.insert(player_colors, { R = 0, G = 0, B = 255})
-	table.insert(player_colors, { R = 255, G = 255, B = 0})
+	table.insert(player_colors, { R = 1, G = 0, B = 0})
+	table.insert(player_colors, { R = 0, G = 1, B = 0})
+	table.insert(player_colors, { R = 0, G = 0, B = 1})
+	table.insert(player_colors, { R = 1, G = 1, B = 0})
 	player_locations = {}
 	table.insert(player_locations, { x = gameboard.width * (1/3), y = gameboard.height * (1 / 4) })
 	table.insert(player_locations, { x = gameboard.width * (2/3), y = gameboard.height * (3 / 4) })
 	table.insert(player_locations, { x = gameboard.width * (1/3), y = gameboard.height * (3 / 4) })
 	table.insert(player_locations, { x = gameboard.width * (2/3), y = gameboard.height * (1 / 4) })
-	catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg")
+	if sound then catch_sound = love.audio.newSource("Assets/Sound/Sofa5.ogg") end
 	skull_image = love.graphics.newImage( "Assets/Images/placeholderskull.png" )
 	chaser_logo = love.graphics.newImage("Assets/Images/ChaserLogoColored.png")
 	game_time = 120

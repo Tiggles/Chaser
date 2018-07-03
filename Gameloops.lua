@@ -115,17 +115,17 @@ function menu_controls_update()
 end
 
 function menu_draw()
-	love.graphics.setBackgroundColor(125, 125, 150)
+	love.graphics.setBackgroundColor(0.49, 0.49, 0.59)
 	if 0 == menu_index then	
-		love.graphics.setColor(0, 200, 255);
+		love.graphics.setColor(0, 0.78, 1);
 		loc_x = options_x_start + math.cos(options_x) * 5
 	else 
-		love.graphics.setColor(255, 255, 255); 
+		love.graphics.setColor(1, 1, 1); 
 		loc_x = options_x_start 
 	end
 	love.graphics.draw(chaser_logo, gameboard.width / 3 + 90, 70, 0, 3)
 	love.graphics.printf( "Play", loc_x, options_y_start + 50, 200, "center" )
-	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	if 1 == menu_index then	love.graphics.setColor(0, 0.78, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
 	love.graphics.printf( "Quit", loc_x, options_y_start + 100, 200, "center" )
 end
 
@@ -150,7 +150,7 @@ function menu_time_update()
 end
 
 function game_draw()
-	love.graphics.setBackgroundColor(125, 100, 150)
+	love.graphics.setBackgroundColor(0.49, 0.39, 0.58)
 	for i = 1, #entities.players do
 		entities.players[i]:draw()
 	end
@@ -184,13 +184,13 @@ end
 
 function countdown_draw()
 	game_draw()
-	love.graphics.setColor(255,255,255)
+	love.graphics.setColor(1,1,1)
 	love.graphics.printf( math.ceil(count_down), options_x_start, options_y_start, 200, "center" )
 end
 
 function score_draw( )
-	love.graphics.setBackgroundColor(150,150,150)
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setBackgroundColor(0.59,0.59,0.59)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
 	

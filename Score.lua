@@ -90,7 +90,7 @@ function Score:getCurrentGameTime()
 end
 
 function Score:drawTimer()
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	love.graphics.printf(self.timer.prefix .. string.format("%02.1f", self.timer.current_time), gameboard.width / 2 - 100, 30, --self.timer.position.x, self.timer.position.y, -- TODO, fix placemet
@@ -148,7 +148,7 @@ function Score:drawScore()
 	local old_font = love.graphics.getFont()
 	love.graphics.setFont(self.timer.font)
 	self:drawPlayerScore()
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	self:drawTimer()
 	love.graphics.setFont(old_font)
 end
