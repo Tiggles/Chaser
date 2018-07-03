@@ -102,25 +102,25 @@ function menu_start( option ) -- TODO refactor branching statements for differen
 end
 
 function menu_draw()
-	love.graphics.setBackgroundColor(125, 125, 150)
+	love.graphics.setBackgroundColor(0.49, 0.49, 0.59)
 	if 0 == menu_index then	
-		love.graphics.setColor(0, 200, 255);
+		love.graphics.setColor(0, 0.784, 1);
 		loc_x = options_x_start + math.cos(options_x) * 5
 	else 
-		love.graphics.setColor(255, 255, 255); 
+		love.graphics.setColor(1, 1, 1); 
 		loc_x = options_x_start 
 	end
 	love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
 	
-	if 1 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	if 0 == #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
+	if 1 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
+	if 0 == #love.joystick.getJoysticks() then love.graphics.setColor(1, 0, 0); end
 	love.graphics.printf( "3-player (requires one controller)", loc_x, options_y_start + 100, 200, "center" )
 	
-	if 2 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
-	if 2 > #love.joystick.getJoysticks() then love.graphics.setColor(255, 0, 0); end
+	if 2 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
+	if 2 > #love.joystick.getJoysticks() then love.graphics.setColor(1, 0, 0); end
 	love.graphics.printf( "4-player (requires two controllers)", loc_x, options_y_start + 150, 200, "center" )
 	
-	if 3 == menu_index then	love.graphics.setColor(0, 200, 255); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(255, 255, 255); loc_x = options_x_start end
+	if 3 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
 	love.graphics.printf( "exit", loc_x, options_y_start + 200, 200, "center" )
 end
 
@@ -145,20 +145,20 @@ function menu_time_update()
 end
 
 function game_draw()
-	love.graphics.setBackgroundColor(125, 100, 150)
-	love.graphics.setColor(255, 0, 0)
+	love.graphics.setBackgroundColor(0.49, 0.39, 0.59)
+	love.graphics.setColor(1, 0, 0)
 	entities.player1:draw()
-	love.graphics.setColor(0, 255, 0)
+	love.graphics.setColor(0, 1, 0)
 	entities.player2:draw()
 	if entities.player3 ~= nil then
-		love.graphics.setColor(0, 0, 255)
+		love.graphics.setColor(0, 0, 1)
 		entities.player3:draw()
 	end
 	if entities.player4 ~= nil then
-		love.graphics.setColor(255, 255, 0)
+		love.graphics.setColor(1, 1, 0)
 		entities.player4:draw()
 	end
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	Score:drawScore()
 end
 
@@ -189,29 +189,29 @@ end
 
 function countdown_draw()
 	game_draw()
-	love.graphics.setColor(255,255,255)
+	love.graphics.setColor(1,1,1)
 	love.graphics.printf( math.ceil(count_down), options_x_start, options_y_start, 200, "center" )
 end
 
 function score_draw( )
-	love.graphics.setBackgroundColor(150,150,150)
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setBackgroundColor(0.59,0.59,0.59)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
 	if entities.player1 ~= nil then
-		love.graphics.setColor(255, 0, 0)
+		love.graphics.setColor(1, 0, 0)
 		love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
 	end
 	if entities.player2 ~= nil then
-		love.graphics.setColor(0, 255, 0)
+		love.graphics.setColor(0, 1, 0)
 		love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
 	end
 	if entities.player3 ~= nil then
-		love.graphics.setColor(0, 0, 255)
+		love.graphics.setColor(0, 0, 1)
 		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )
 	end
 	if entities.player4 ~= nil then
-		love.graphics.setColor(255, 255, 0)
+		love.graphics.setColor(1, 1, 0)
 		love.graphics.printf( "Player 4: " .. Score.score_count.player4score, options_x_start, options_y_start + 80, 200, "center" )
 	end
 end
