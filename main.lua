@@ -1,5 +1,5 @@
 require "Entities"
-require "Helper_Functions"
+require "Utility_Functions"
 require "Score"
 require "Gameloops"
 bump = require 'bump/bump'

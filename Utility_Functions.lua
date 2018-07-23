@@ -8,15 +8,11 @@ function draw_corner(x, y, rotation)
 end
 
 function draw_row_x(start_location, delta, end_location, y, rotation)
-    for i = start_location, end_location, delta do
-        love.graphics.draw()
-    end
+
 end
 
 function draw_row_y(start_location, delta, end_location, x, rotation)
-    for i = start_location, end_location, delta do
-
-    end
+    
 end
 
 function check_collision(self, other)
@@ -55,6 +51,7 @@ function init_random_map()
         boundaries = boundaries,
         boxes = nil
     }
+
     return map
 end
 
@@ -82,7 +79,7 @@ function reset_position(entities)
     end
 end
 
-function set_position_by_player_count( ) -- TODO better random
+function set_position_by_player_count() -- TODO better random
     if 2 == player_count then
         if 1 == math.random(2) then
             x1 = gameboard.width * (1 / 3); y1 = gameboard.height * (1/2);
@@ -192,42 +189,48 @@ function draw_input_strings()
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press W, S, A or D to join.", location_x, location_y, 200, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handleWASD )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "WASD joined.", location_x, location_y, 200, "left" )
     end
     if not player_already_added(handleULRD) then
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press up, down, left or right to join.", location_x, location_y + 20, 300, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handleULRD )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "Up, down, left or right joined.", location_x, location_y + 20, 200, "left" )
     end
     if not player_already_added_controller(handle_joystick_left, 1) then
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press LB on the first controller to join.", location_x, location_y + 40, 300, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handle_joystick_left, 1 )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "LB on first controller joined.", location_x, location_y + 40, 200, "left" )
     end
     if not player_already_added_controller(handle_joystick_right, 1) then
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press RB on the first controller to join.", location_x, location_y + 60, 300, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handle_joystick_right, 1 )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "RB on first controller joined.", location_x, location_y + 60, 200, "left" )
     end
     if not player_already_added_controller(handle_joystick_left, 2) then
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press LB on the second controller to join.", location_x, location_y + 80, 300, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handle_joystick_left, 2 )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "LB on second controller joined.", location_x, location_y + 80, 200, "left" )
     end 
     if not player_already_added_controller(handle_joystick_right, 2) then
         love.graphics.setColor(255, 255, 255)
         love.graphics.printf( "Press RB on the second controller to join.", location_x, location_y + 100, 300, "left" )
     else
-        love.graphics.setColor(0, 255, 0)
+        local rgb = get_player_color_by_control_scheme( handle_joystick_right, 2 )
+        love.graphics.setColor(rgb.r, rgb.g, rgb.b)
         love.graphics.printf( "LB on second controller joined.", location_x, location_y + 100, 200, "left" )
     end 
 end
@@ -237,6 +240,26 @@ function player_already_added( control_scheme )
         if entities.players[i].control_scheme == control_scheme then return true end
     end
     return false
+end
+
+function get_player_color_by_control_scheme( control_scheme )
+    for i = 1, #entities.players do
+        if entities.players[i].control_scheme == control_scheme then return entities.players[i].RGB end
+    end
+    print("Player color by control scheme. Should never occur.")
+    return nil
+end
+
+function get_player_color_by_control_scheme_controller(control_scheme, index)
+    for i = 1, #entities.players do
+        if entities.players[i].control_scheme == control_scheme then
+            if entities.players[i].controller_index == index then
+                return entities.players[i].RGB
+            end
+        end
+    end
+    print("Player color by control scheme. Should never occur.")
+    return nil
 end
 
 function player_already_added_controller( control_scheme, index )
