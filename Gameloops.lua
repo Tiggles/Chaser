@@ -16,112 +16,118 @@ function menu_update( delta_time )
 	options_x = options_x + delta_time * 3
 end
 
-function menu_start( option ) -- TODO refactor branching statements for different player counts
+function menu_start( option )
+	entities = {}
+	entities.players = {}
 	if 1 == option then
 		swap_time = love.timer.getTime() + math.random(5) + 3 
 		world = bump.newWorld(64)
-		chaser = love.math.random( 2 )
-		entities = {
-			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1/2), 1, 1 == chaser),
-			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1/2), 2, 2 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
-				
+		entities.map = init_random_map()
+					
 		for i = 1, #entities.map.boundaries do
 			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
 		end
 
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
 		count_down = 3
 
-		draw = menu_time_draw
-		update = menu_time_update
-		player_count = 2
-	elseif 2 == option and #love.joystick.getJoysticks() > 0 then
-		chaser = love.math.random( 3 )
-		entities = {
-			player1 = Player:new(gameboard.width * (1 / 3), gameboard.height * (1 / 3), 1, 1 == chaser),
-			player2 = Player:new(gameboard.width * (2 / 3), gameboard.height * (1 / 3), 2, 2 == chaser),
-			player3 = Player:new(gameboard.width * (1 / 2), gameboard.height * (2 / 3), 3, 3 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
-		
-		swap_time = love.timer.getTime() + math.random(5) + 3
-		world = bump.newWorld(64)
-		
-		for i = 1, #entities.map.boundaries do
-			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
-		end
-
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
-		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
-
-		count_down = 3
-
-		draw = menu_time_draw
-		update = menu_time_update
-		
-		player_count = 3
-	elseif 3 == option and #love.joystick.getJoysticks() == 2 then
-		chaser = love.math.random( 4 )
-
-		entities = {
-			player1 = Player:new(gameboard.width * (2 / 6), gameboard.height * (1 / 4), 1, 1 == chaser), 
-			player2 = Player:new(gameboard.width * (4 / 6), gameboard.height * (1 / 4), 2, 2 == chaser),
-			player3 = Player:new(gameboard.width * (2 / 6), gameboard.height * (3 / 4), 3, 3 == chaser),
-			player4 = Player:new(gameboard.width * (4 / 6), gameboard.height * (3 / 4), 4, 4 == chaser),
-			map = init_random_map(),
-			score = nil
-		}
-
-		swap_time = love.timer.getTime() + math.random(5) + 3
-		world = bump.newWorld(64)
-		
-		for i = 1, #entities.map.boundaries do
-			world:add(entities.map.boundaries[i], entities.map.boundaries[i].x, entities.map.boundaries[i].y, entities.map.boundaries[i].width, entities.map.boundaries[i].height)
-		end
-
-		world:add(entities.player1, entities.player1.x, entities.player1.y, 20, 20)
-		world:add(entities.player2, entities.player2.x, entities.player2.y, 20, 20)
-		world:add(entities.player3, entities.player3.x, entities.player3.y, 20, 20)
-		world:add(entities.player4, entities.player4.x, entities.player4.y, 20, 20)
-
-		count_down = 3
-
-		draw = menu_time_draw
-		update = menu_time_update
-
-		player_count = 4
-	elseif 4 == option then
+		draw = menu_controls_draw
+		update = menu_controls_update
+		player_count = 0
+	elseif 2 == option then
 		love.event.quit()
+	end
+end
+
+function menu_controls_draw()
+	draw_input_strings()
+end
+
+function menu_controls_update()
+	if menu_delay == nil then
+		menu_delay = love.timer.getTime()
+	end
+	
+	if player_count < 4 then
+		if not player_already_added(handleWASD) and love.keyboard.isDown("w", "a", "s", "d") then
+			player_count = player_count + 1
+			local c = player_colors[player_count]
+			local loc = player_locations[player_count]
+			table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleWASD, false, 0))
+			print("inserted WASD")
+		end
+
+
+		if not player_already_added(handleULRD) and love.keyboard.isDown("up", "left", "right", "down") then
+			player_count = player_count + 1
+			local c = player_colors[player_count]
+			local loc = player_locations[player_count]
+			table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handleULRD, false, 0))
+			print("inserted ULRD")
+		end	
+
+		local current_joysticks = love.joystick.getJoysticks()
+
+		if #current_joysticks > 0 then
+			if not player_already_added_controller(handle_joystick_left, 1) and current_joysticks[1]:isDown( 5 ) then -- LB
+				player_count = player_count + 1
+				local c = player_colors[player_count]
+				local loc = player_locations[player_count]
+				table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 1))
+				print("inserted Left joystick 1")
+			end
+			if not player_already_added_controller(handle_joystick_right, 1) and current_joysticks[1]:isDown( 6 ) then -- RB
+				player_count = player_count + 1
+				local c = player_colors[player_count]
+				local loc = player_locations[player_count]
+				table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_right, true, 1))
+				print("inserted Right joystick 1")
+			end
+			if #current_joysticks > 1 then
+				if not player_already_added_controller(handle_joystick_left, 2) and current_joysticks[2]:isDown( 5 ) then -- LB
+					player_count = player_count + 1
+					local c = player_colors[player_count]
+					local loc = player_locations[player_count]
+					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_left, true, 2))
+					print("inserted Left joystick 2")
+				end
+				if not player_already_added_controller(handle_joystick_right, 2) and current_joysticks[2]:isDown( 6 ) then -- RB
+					player_count = player_count + 1
+					local c = player_colors[player_count]
+					local loc = player_locations[player_count]
+					table.insert(entities.players, Player:new(loc.x, loc.y, player_count, false, Color:color(c.R, c.G, c.B), handle_joystick_right, true, 2))
+					print("inserted Right joystick 2")
+				end
+			end
+		end
+	end
+
+	if love.keyboard.isDown("return") and #entities.players > 1 and love.timer.getTime() > menu_delay + 0.2 then
+		chaser = math.random(1, #entities.players)
+		entities.players[chaser].velocity = Velocity:chaser()
+		for i = 1, #entities.players do
+			local player = entities.players[i]
+			world:add(player, player.x, player.y, 32, 32)
+		end
+		next_menu_change = love.timer.getTime() + 0.2
+		draw = menu_time_draw
+		update = menu_time_update
 	end
 end
 
 function menu_draw()
 	love.graphics.setBackgroundColor(0.49, 0.49, 0.59)
 	if 0 == menu_index then	
-		love.graphics.setColor(0, 0.784, 1);
+		love.graphics.setColor(0, 0.78, 1);
 		loc_x = options_x_start + math.cos(options_x) * 5
 	else 
 		love.graphics.setColor(1, 1, 1); 
 		loc_x = options_x_start 
 	end
-	love.graphics.printf( "2-player", loc_x, options_y_start + 50, 200, "center" )
-	
-	if 1 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
-	if 0 == #love.joystick.getJoysticks() then love.graphics.setColor(1, 0, 0); end
-	love.graphics.printf( "3-player (requires one controller)", loc_x, options_y_start + 100, 200, "center" )
-	
-	if 2 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
-	if 2 > #love.joystick.getJoysticks() then love.graphics.setColor(1, 0, 0); end
-	love.graphics.printf( "4-player (requires two controllers)", loc_x, options_y_start + 150, 200, "center" )
-	
-	if 3 == menu_index then	love.graphics.setColor(0, 0.784, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
-	love.graphics.printf( "exit", loc_x, options_y_start + 200, 200, "center" )
+
+	love.graphics.draw(chaser_logo, gameboard.width / 3 + 90, 70, 0, 3)
+	love.graphics.printf( "Play", loc_x, options_y_start + 50, 200, "center" )
+	if 1 == menu_index then	love.graphics.setColor(0, 0.78, 1); loc_x = options_x_start + math.cos(options_x) * 5 else love.graphics.setColor(1, 1, 1); loc_x = options_x_start end
+	love.graphics.printf( "Quit", loc_x, options_y_start + 100, 200, "center" )
 end
 
 function menu_time_draw()
@@ -133,11 +139,11 @@ function menu_time_update()
 		draw = countdown_draw
 		update = countdown_update
 		Score:setupTimer(game_time, nil, 20, options_x_start)
+        Score:setupScoreCount()
 	end
 	if love.keyboard.isDown("up") and next_menu_change < love.timer.getTime() then
 		next_menu_change = love.timer.getTime() + 0.05
 		game_time = math.min(game_time + 1, 99999)
-
 	elseif love.keyboard.isDown("down") and next_menu_change < love.timer.getTime() then
 		next_menu_change = love.timer.getTime() + 0.05
 		game_time = math.max(game_time - 1, 1)
@@ -145,28 +151,18 @@ function menu_time_update()
 end
 
 function game_draw()
-	love.graphics.setBackgroundColor(0.49, 0.39, 0.59)
-	love.graphics.setColor(1, 0, 0)
-	entities.player1:draw()
-	love.graphics.setColor(0, 1, 0)
-	entities.player2:draw()
-	if entities.player3 ~= nil then
-		love.graphics.setColor(0, 0, 1)
-		entities.player3:draw()
+	love.graphics.setBackgroundColor(0.49, 0.39, 0.58)
+	for i = 1, #entities.players do
+		entities.players[i]:draw()
 	end
-	if entities.player4 ~= nil then
-		love.graphics.setColor(1, 1, 0)
-		entities.player4:draw()
-	end
-	love.graphics.setColor(1, 1, 1)
+	draw_border()
 	Score:drawScore()
 end
 
 function game_update(delta_time)
-	entities.player1:update(1, delta_time, world)
-	entities.player2:update(2, delta_time, world)
-	if entities.player3 ~= nil then entities.player3:update(3, delta_time, world) end
-	if entities.player4 ~= nil then entities.player4:update(4, delta_time, world) end
+	for i = 1, #entities.players do
+		entities.players[i]:update(delta_time, world)
+	end
 	handle_collisions( chaser )
 	if swap_time < love.timer.getTime() then
 		swap_chaser(entities)
@@ -198,21 +194,12 @@ function score_draw( )
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf( "TIME EXPIRED" , options_x_start, options_y_start, 200, "center" )
 	love.graphics.printf( "To play again, press space", options_x_start, options_y_start + 100, 200, "center" )
-	if entities.player1 ~= nil then
-		love.graphics.setColor(1, 0, 0)
-		love.graphics.printf( "Player 1: " .. Score.score_count.player1score, options_x_start, options_y_start + 20, 200, "center" )
-	end
-	if entities.player2 ~= nil then
-		love.graphics.setColor(0, 1, 0)
-		love.graphics.printf( "Player 2: " .. Score.score_count.player2score, options_x_start, options_y_start + 40, 200, "center" )
-	end
-	if entities.player3 ~= nil then
-		love.graphics.setColor(0, 0, 1)
-		love.graphics.printf( "Player 3: " .. Score.score_count.player3score, options_x_start, options_y_start + 60, 200, "center" )
-	end
-	if entities.player4 ~= nil then
-		love.graphics.setColor(1, 1, 0)
-		love.graphics.printf( "Player 4: " .. Score.score_count.player4score, options_x_start, options_y_start + 80, 200, "center" )
+	
+	local y_delta = 20
+	for i = 1, player_count do
+		local color = player_colors[i]
+		love.graphics.setColor(color.R, color.G, color.B)
+		love.graphics.printf( "Player " .. i .. ": " .. Score.score_count.player_score[i], options_x_start, options_y_start + 20 * i, 200, "center" )	
 	end
 end
 
@@ -223,6 +210,9 @@ function score_update()
 	if time < love.timer.getTime() then
 		if love.keyboard.isDown("space") then
 			time = nil
+			Score.score_count.player_score = {}
+			entities.players = {}
+			entities.player_count = 0
 			update = menu_update
 			draw = menu_draw
 		end

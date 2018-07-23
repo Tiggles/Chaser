@@ -20,15 +20,22 @@ Left axis on controller
 
 Left axis on controller
 
+# Installation
+
+Clone the repository
+
+Enter the folder and type
+
+´´´bash
+git submodule init && git submodule update
+´´´
+
 # TODO:
 
 1. Obstacles
 2. World boundary (DONE)
 3. Fix bump addition to repo
-4. End time (DONE)
-5. End time selection from menu
-6. Multiple Players, single controller
-7. Sound Effects
-8. Music
-9. Sprites
-10. 
+4. Sound Effects
+5. Music
+6. Sprites
+7. Mapping for controllers (DualShock 4 issues with right axis)

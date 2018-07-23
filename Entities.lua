@@ -1,3 +1,15 @@
+Color = {}
+
+function Color:color(r, g, b)
+	color = {
+		r = r,
+		g = g,
+		b = b
+	}
+	self.__index = self
+	return setmetatable(color, self)
+end
+
 
 Velocity = {}
 	
@@ -35,18 +47,30 @@ function Velocity:chasee(old_velocity)
 	end
 end
 
+function Velocity:setSpeedX()
+	self.speedX = math.max(math.min(self.speedX, self.max), self.min)
+end
+
+function Velocity:setSpeedY()
+	self.speedY = math.max(math.min(self.speedY, self.max), self.min)
+end
+
 function Velocity:resetSpeed()
 	self.speedX = 0; self.speedY = 0;
 end
 
 Player = {}
 
-function Player:new(x, y, player_number, is_chaser)
+function Player:new(x, y, player_number, is_chaser, RGB, control_scheme, use_controller, controller_index)
 	player = {
 		x = x,
 		y = y,
 		name = "player" .. tostring(player_number),
-		player_number = player_number
+		player_number = player_number,
+		RGB = RGB,
+		control_scheme = control_scheme,
+		use_controller = use_controller,
+		controller_index = controller_index
 	}
 	if is_chaser then
 		player.velocity = Velocity:chaser()
@@ -57,19 +81,11 @@ function Player:new(x, y, player_number, is_chaser)
 	return setmetatable(player, self)
 end
 
-function Player:update(player_number, delta_time, world) -- Redo with function pointers instead?
-	if 1 == self.player_number then
-		handleWASD(delta_time, self, world)
-	elseif 2 == self.player_number then
-		handleULRD(delta_time, self, world)
-	elseif 3 == self.player_number then
-		if love.joystick.getJoystickCount() > 0 then
-			handle_joystick(1, delta_time)
-		end
-	elseif 4 == self.player_number then
-		if love.joystick.getJoystickCount() > 1 then
-			handle_joystick(2, delta_time)
-		end
+function Player:update(delta_time, world)
+	if not self.use_controller then
+		self.control_scheme(delta_time, self, world)
+	else
+		self.control_scheme( self.controller_index, delta_time, self.player_number, world )
 	end
 end
 
@@ -81,23 +97,19 @@ function Player:swap_chaser()
 	end
 end
 
-function Player:add_point(player_number)
+function Player:add_point()
 	if self.player_number == chaser then
-		if 1 == player_number then
-			Score.score_count.player1score = Score.score_count.player1score + 1
-		elseif 2 == player_number then
-			Score.score_count.player2score = Score.score_count.player2score + 1
-		end
+		Score.score_count.player_score[self.player_number] = Score.score_count.player_score[self.player_number] + 1
 	end
 end
 
 function Player:draw(camera)
+	love.graphics.setColor(self.RGB.r, self.RGB.g, self.RGB.b)
 	if self.player_number == chaser then
-		drawmode = "fill"
+		love.graphics.draw( skull_image, self.x, self.y)
 	else
-		drawmode = "line"
+		love.graphics.rectangle("line", self.x, self.y, 32, 32)
 	end
-	love.graphics.rectangle(drawmode, self.x, self.y, 20, 20)
 end
 
 function handleULRD(delta_time, player, world)
@@ -122,8 +134,9 @@ function handleULRD(delta_time, player, world)
 	elseif player.velocity.speedY > 0 then 
 		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
 	end
-	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
-	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+
+	player.velocity:setSpeedX()
+	player.velocity:setSpeedY()
 
 	local actualX, actualY, cols, len = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
 
@@ -153,8 +166,9 @@ function handleWASD(delta_time, player, world)
 	elseif player.velocity.speedY > 0 then 
 		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
 	end
-	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
-	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+
+	player.velocity:setSpeedX()
+	player.velocity:setSpeedY()
 
 	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
 
@@ -162,12 +176,12 @@ function handleWASD(delta_time, player, world)
 	player.y = actualY
 end
 
-function handle_joystick( joystick_number, delta_time )
-	local current_joystick = love.joystick.getJoysticks()[joystick_number]
-	player = {}
-	if 1 == joystick_number then player = entities.player3 else player = entities.player4 end
 
-	-- actual movement
+-- TODO: REDO
+function handle_joystick_left( joystick_number, delta_time, player_number, world )
+	local current_joystick = love.joystick.getJoysticks()[joystick_number]
+	local player = entities.players[player_number]
+
 	local left_right_axis = current_joystick:getAxis(1)
 	local up_down_axis = current_joystick:getAxis(2)
 
@@ -187,8 +201,39 @@ function handle_joystick( joystick_number, delta_time )
 		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
 	end
 
-	player.velocity.speedX = math.max(math.min(player.velocity.speedX, player.velocity.max), player.velocity.min)
-	player.velocity.speedY = math.max(math.min(player.velocity.speedY, player.velocity.max), player.velocity.min)
+	player.velocity:setSpeedX()
+	player.velocity:setSpeedY()
+
+	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
+
+	player.x = actualX
+	player.y = actualY
+end
+
+function handle_joystick_right(joystick_number, delta_time, player_number, world)
+	local current_joystick = love.joystick.getJoysticks()[joystick_number]
+	local player = entities.players[player_number]
+	local left_right_axis = current_joystick:getAxis(4)
+	local up_down_axis = current_joystick:getAxis(5)
+
+	if left_right_axis > 0.2 or left_right_axis < -0.2 then
+		player.velocity.speedX = player.velocity.speedX - player.velocity.delta * (left_right_axis * -1) * delta_time	
+	elseif player.velocity.speedX < 0 then 
+		player.velocity.speedX = math.min(player.velocity.speedX + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedX > 0 then
+		player.velocity.speedX = math.max(player.velocity.speedX - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	if up_down_axis > 0.2 or up_down_axis < -0.2 then
+		player.velocity.speedY = player.velocity.speedY - player.velocity.delta * (up_down_axis * -1) * delta_time
+	elseif player.velocity.speedY < 0 then 
+		player.velocity.speedY = math.min(player.velocity.speedY + (player.velocity.delta * 2 * delta_time), 0)
+	elseif player.velocity.speedY > 0 then 
+		player.velocity.speedY = math.max(player.velocity.speedY - (player.velocity.delta * 2 * delta_time), 0)
+	end
+
+	player.velocity:setSpeedX()
+	player.velocity:setSpeedY()
 
 	local actualX, actualY = world:move(player, player.x + player.velocity.speedX, player.y + player.velocity.speedY)
 
